@@ -5,15 +5,15 @@ const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-const api = require('./routes/index.js')
-
 
 app.use(cors());
 app.use(helmet());
 app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({ extended: true }));
 
-api.use('/api', api)
+app.get('/', (req, res) => {
+  res.send({ message: 'hello Express!'})
+});
 
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}.`);
