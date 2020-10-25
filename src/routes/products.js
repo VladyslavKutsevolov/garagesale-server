@@ -11,7 +11,8 @@ const addNewProduct = function(item, db) {
 
 module.exports = db => {
   router.get("/", (req, res) => {
-    db.query(`SELECT * FROM products;`)
+    // change req.params to find correct id 
+    db.query(`SELECT * FROM products WHERE sale_id = $1;`, req.params.id)
       .then(data => {
         const listOfProducts = data.rows
         res.json({listOfProducts})

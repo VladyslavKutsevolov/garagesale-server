@@ -24,6 +24,7 @@ module.exports = db => {
   });
 
   // Get sale by ID
+  /*
   router.get("/:id", (req, res) => {
     const saleId = req.params.id;
     const queryString = `
@@ -38,6 +39,24 @@ module.exports = db => {
       })
       .catch(err => console.log('query Error', err))
   });
+  */
+
+ router.get("/:id", (req, res) => {
+  const saleId = req.params.id;
+  const queryString = `
+    SELECT products.*
+    FROM products
+    JOIN garage_sales ON garage_sales.id = sale_id
+    WHERE sale_id = $1;`;
+
+  db.query(queryString, [saleId])
+    .then(data => {
+      const garage = data.rows
+      res.json({garage})
+    })
+    .catch(err => console.log('query Error', err))
+});
+
 
   // Create new Garage
   router.post("/new", (req, res) => {
@@ -71,7 +90,7 @@ module.exports = db => {
 /*
 SQL for category filter 
 
-SELECT garage_sales.title, categories.name FROM garage_sales
+SELECT garage_sales.title, actegories.name FROM garage_sales
 JOIN products ON garage_sales.id = sale_id
 JOIN product_categories ON products.id = product_id
 JOIN categories ON product_categories.id = categories.id
