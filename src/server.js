@@ -6,14 +6,27 @@ const express = require("express");
 const bodyparser = require("body-parser");
 const helmet = require("helmet");
 const cors = require("cors");
-const app = express();
+const app = express(); // export and require in chatServer
 const PORT = process.env.PORT || 3001;
 const cookieSession = require('cookie-session');
+
+// WebSocket Setup 
+const socketio = require('socket.io');
+const server = http.createServer(app);
+const io = socketio(server);
+
+// define function init chat
+//
+
+
 
 app.use(cookieSession({
   name: 'session',
   keys: ['secret']
 }));
+
+
+
 
 // Database setup
 const db = require("./db/database");
