@@ -16,6 +16,7 @@ db.connect()
 
 //Routes
 const sales = require('./routes/sales');
+const products = require('./routes/products');
 
 app.use(cors());
 app.use(helmet());
@@ -26,8 +27,9 @@ app.get('/', (req, res) => {
   res.send({ message: 'hello Express!'})
 });
 
-// Create garage
+// Use routes modules
 app.use("/sales", sales(db));
+app.use("/products", products(db));
 
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}.`);

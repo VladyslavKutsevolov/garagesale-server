@@ -1,7 +1,5 @@
 const { Pool } = require('pg');
 
-console.log('what is in env', process.env.DB_PASS)
-
 const pool = new Pool({
   host: process.env.DB_HOST,
   port: process.env.DB_PORT,

@@ -1,0 +1,55 @@
+
+-- https://www.javatpoint.com/dbms-normalization#:~:text=Normalization%20is%20the%20process%20of,Insertion%2C%20Update%20and%20Deletion%20Anomalies.
+
+101   201   Rohits Garage sale      Huge Sale     20th Oct, 2020  Vancouver
+-- 102   201   Rohit's ANother garaga  Low Sale      1st Jan, 2021   Burnaby
+
+
+I am seller on Amazon
+Garage downtown 
+  1. iPhone
+  2. mac
+  3. blah.
+
+Garage Burnaby
+  1.iPhone
+  
+1. 101    Rohit   201     iPhone      20th Oct, 2020
+2. 102    Rohit   201     Samsung     20th Nov, 2020
+XYZ - 
+
+PQR - Samsung
+
+2. 
+
+
+////////
+garage_sales_line_item
+
+id
+gararge_sale_id
+product_id
+price
+
+ID      Garagage_sale_id  Product_id    Price
+10001   101               P01           200
+10002   101               P02           150
+
+
+//////
+
+////
+1. /Sales route 
+show all the all saleS_Garage
+
+Garage_Sale name  (id) - Click 
+
+You need to get the ID of the Garage_sale 
+
+2. /Sales/Gargage/id
+--- All the products were 
+
+
+
+
+///
