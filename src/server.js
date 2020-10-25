@@ -2,6 +2,7 @@
 require('dotenv').config();
 
 // Web server config.
+const http = require('http');
 const express = require("express");
 const bodyparser = require("body-parser");
 const helmet = require("helmet");
@@ -15,7 +16,7 @@ const socketio = require('socket.io');
 const server = http.createServer(app);
 const io = socketio(server);
 
-// define function init chat
+// define function init chat, pass in io and call it here
 //
 
 
@@ -37,6 +38,7 @@ db.connect()
 const sales = require('./routes/sales');
 const products = require('./routes/products');
 const usersRoutes = require("./routes/users");
+const chat = require('./routes/chat.js');
 
 app.use(cors());
 app.use(helmet());
@@ -51,6 +53,7 @@ app.get('/', (req, res) => {
 app.use("/sales", sales(db));
 app.use("/products", products(db));
 app.use("/users", usersRoutes(db));
+app.use("/chat", chat.js)
 
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}.`);
