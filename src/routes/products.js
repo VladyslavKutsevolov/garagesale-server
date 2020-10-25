@@ -43,12 +43,13 @@ const addNewProduct = function (item, db) {
   return db.query(queryString, valueArray).then((data) => data.rows);
 };
 
-module.exports = (db) => {
-  router.get('/', (req, res) => {
-    db.query(`SELECT * FROM products;`)
-      .then((data) => {
-        const listOfProducts = data.rows;
-        res.json({ listOfProducts });
+module.exports = db => {
+  router.get("/", (req, res) => {
+    // change req.params to find correct id 
+    db.query(`SELECT * FROM products WHERE sale_id = $1;`, req.params.id)
+      .then(data => {
+        const listOfProducts = data.rows
+        res.json({listOfProducts})
       })
       .catch((err) => console.log('query Error', err));
   });
