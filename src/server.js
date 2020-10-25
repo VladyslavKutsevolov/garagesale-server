@@ -8,6 +8,12 @@ const helmet = require("helmet");
 const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT || 3001;
+const cookieSession = require('cookie-session');
+
+app.use(cookieSession({
+  name: 'session',
+  keys: ['secret']
+}));
 
 // Database setup
 const db = require("./db/database");
@@ -17,6 +23,7 @@ db.connect()
 //Routes
 const sales = require('./routes/sales');
 const products = require('./routes/products');
+const usersRoutes = require("./routes/users");
 
 app.use(cors());
 app.use(helmet());
@@ -30,6 +37,7 @@ app.get('/', (req, res) => {
 // Use routes modules
 app.use("/sales", sales(db));
 app.use("/products", products(db));
+app.use("/users", usersRoutes(db));
 
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}.`);
