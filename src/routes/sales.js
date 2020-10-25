@@ -1,7 +1,8 @@
 const router = require("express").Router();
 
 const addNewGarage = function(garage, db) {
-  const queryString = `INSERT INTO garage_sales (seller_id, title, cover_photo_url, description, created_at, location_id) VALUES ($1, $2, $3, $4, $5, $6);`;
+  const queryString = `
+    INSERT INTO garage_sales (seller_id, title, cover_photo_url, description, created_at, location_id) VALUES ($1, $2, $3, $4, $5, $6);`;
 
   const valueArray = [garage.user_id, garage.title, garage.description, garage.cover_photo_id, garage.created_at, garage.location_id]
 
@@ -12,7 +13,9 @@ const addNewGarage = function(garage, db) {
 module.exports = db => {
   // Get all sales
   router.get("/", (req, res) => {
-    db.query(`SELECT * FROM garage_sales;`)
+    db.query(`
+      SELECT * 
+      FROM garage_sales;`)
       .then(data => {
         const listOfSales = data.rows
         res.json({listOfSales})
@@ -23,7 +26,10 @@ module.exports = db => {
   // Get sale by ID
   router.get("/:id", (req, res) => {
     const saleId = req.params.id;
-    const queryString = `SELECT * FROM garage_sales WHERE id = $1;`;
+    const queryString = `
+      SELECT * 
+      FROM garage_sales 
+      WHERE id = $1;`;
 
     db.query(queryString, [saleId])
       .then(data => {
@@ -36,8 +42,6 @@ module.exports = db => {
   // Create new Garage
   router.post("/new", (req, res) => {
     const newGarage = req.body;
-    console.log('what is in new', newGarage);
-
     addNewGarage(newGarage, db)
     .then(message => {
       return res.json( {message: "New Garage is created!"} );
@@ -47,11 +51,11 @@ module.exports = db => {
         .status(500)
         .json({ error: err.message });
     });
-  })
+  });
 
+  // Delete Garage
   router.delete('/:id', (req, res) => {
     const query = 'DELETE FROM garage_sales WHERE id = $1;';
-    console.log('what is req.params', req.params.id)
     db.query(query, [req.params.id])
       .then(() => {
         res.json({ success: true });
@@ -63,3 +67,15 @@ module.exports = db => {
 
   return router;
 };
+
+/*
+SQL for category filter 
+
+SELECT garage_sales.title, categories.name FROM garage_sales
+JOIN products ON garage_sales.id = sale_id
+JOIN product_categories ON products.id = product_id
+JOIN categories ON product_categories.id = categories.id
+WHERE categories.name = 'Book'
+;
+
+*/

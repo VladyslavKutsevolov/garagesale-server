@@ -1,10 +1,10 @@
 const router = require("express").Router();
 
 const checkUserExists = (user, db) => {
-  const queryString =
-    `SELECT username
-   FROM users
-   WHERE username = $1`;
+  const queryString =`
+    SELECT username 
+    FROM users 
+    WHERE username = $1`;
   const queryParams = [user.username];
   return db.query(queryString, queryParams)
     .then(data => {
@@ -17,10 +17,11 @@ const checkUserExists = (user, db) => {
 };
 
 const findUser = async (username, db) => {
-  const data = await db.query(`
-  SELECT * FROM users
-  WHERE username = $1;`
-    , [username]);
+  const queryString = `
+    SELECT * 
+    FROM users 
+    WHERE username = $1;`;
+  const data = await db.query(queryString, [username]);
   const user = data.rows[0];
   return user;
 };
