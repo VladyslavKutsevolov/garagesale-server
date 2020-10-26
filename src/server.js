@@ -18,12 +18,15 @@ app.ws('/chat', function(ws, req) {
 
   ws.onmessage = msg => {
     // console.log("msgJSON", JSON.parse(msg.data))
-    console.log("mesage", msg)
     const data = JSON.parse(msg.data)
-    console.log("mesage.data", data)
-    console.log("msg type", data.payload)
-    if (msg.type === 'message') {
+    console.log("data received", data)
+    if (data.type === 'message') {
+      console.log("Server received data type message")
       ws.send(JSON.stringify({type: 'message', payload: data.payload}));
+    };
+    if (data.type === 'join') {
+      console.log("Server received data type join")
+      ws.send(JSON.stringify({type: 'join', payload: data.payload}));
     }
   };
 });
