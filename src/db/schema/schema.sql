@@ -1,12 +1,20 @@
-DROP TABLE IF EXISTS users CASCADE;
-DROP TABLE IF EXISTS messages CASCADE;
-DROP TABLE IF EXISTS locations CASCADE;
-DROP TABLE IF EXISTS garage_sales CASCADE;
-DROP TABLE IF EXISTS products CASCADE;
-DROP TABLE IF EXISTS categories CASCADE;
-DROP TABLE IF EXISTS product_categories CASCADE;
+DROP TABLE IF EXISTS users
+CASCADE;
+DROP TABLE IF EXISTS messages
+CASCADE;
+DROP TABLE IF EXISTS locations
+CASCADE;
+DROP TABLE IF EXISTS garage_sales
+CASCADE;
+DROP TABLE IF EXISTS products
+CASCADE;
+DROP TABLE IF EXISTS categories
+CASCADE;
+DROP TABLE IF EXISTS product_categories
+CASCADE;
 
-CREATE TABLE users (
+CREATE TABLE users
+(
   id SERIAL PRIMARY KEY NOT NULL,
   username VARCHAR(255) NOT NULL,
   first_name VARCHAR(255) NOT NULL,
@@ -15,7 +23,8 @@ CREATE TABLE users (
   password VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE messages (
+CREATE TABLE messages
+(
   id SERIAL PRIMARY KEY NOT NULL,
   to_user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
   from_user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
@@ -24,17 +33,19 @@ CREATE TABLE messages (
   read_at TIMESTAMP NOT NULL
 );
 
-CREATE TABLE locations (
+CREATE TABLE locations
+(
   id SERIAL PRIMARY KEY NOT NULL,
-  street VARCHAR(255) NOT NULL,
-  postcode VARCHAR(50) NOT NULL,
+  street VARCHAR(255),
+  postcode VARCHAR(50),
   city VARCHAR(255) NOT NULL,
-  province VARCHAR(50) NOT NULL,
-  longitude VARCHAR(255) NOT NULL,
-  latitude VARCHAR(255) NOT NULL
+  province VARCHAR(50),
+  longitude VARCHAR(255),
+  latitude VARCHAR(255)
 );
 
-CREATE TABLE garage_sales (
+CREATE TABLE garage_sales
+(
   id SERIAL PRIMARY KEY NOT NULL,
   seller_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
   title VARCHAR(255) NOT NULL,
@@ -44,7 +55,8 @@ CREATE TABLE garage_sales (
   location_id INTEGER REFERENCES locations(id) ON DELETE CASCADE
 );
 
-CREATE TABLE products (
+CREATE TABLE products
+(
   id SERIAL PRIMARY KEY NOT NULL,
   seller_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
   title VARCHAR(255) NOT NULL,
@@ -55,12 +67,14 @@ CREATE TABLE products (
   sale_id INTEGER REFERENCES garage_sales(id) ON DELETE CASCADE
 );
 
-CREATE TABLE categories (
+CREATE TABLE categories
+(
   id SERIAL PRIMARY KEY NOT NULL,
   name VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE product_categories (
+CREATE TABLE product_categories
+(
   id SERIAL PRIMARY KEY NOT NULL,
   product_id INTEGER REFERENCES products(id) ON DELETE CASCADE,
   category_id INTEGER REFERENCES categories(id) ON DELETE CASCADE
