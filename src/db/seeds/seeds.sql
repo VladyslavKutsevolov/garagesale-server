@@ -1,6 +1,6 @@
-insert into users (username, first_name, last_name, email, password) values ('imcilenna0', 'Inga', 'McIlenna', 'imcilenna0@shinystat.com', 'n9lyqb28KS');
-insert into users (username, first_name, last_name, email, password) values ('kcoward1', 'Karilynn', 'Coward', 'kcoward1@smh.com.au', 'RKDXgdl');
-insert into users (username, first_name, last_name, email, password) values ('cbayston2', 'Clemens', 'Bayston', 'cbayston2@statcounter.com', 'pJm9BYE2PAQL');
+insert into users (username, first_name, last_name, email, password) values ('test', 'tester', 'first', 'test@test.com', 'test');
+insert into users (username, first_name, last_name, email, password) values ('admin', 'super', 'admin', 'admin@super.com', 'admin');
+insert into users (username, first_name, last_name, email, password) values ('jaeyoung', 'jaeyoung', 'kim', 'jae@garage.com', 'password');
 insert into users (username, first_name, last_name, email, password) values ('eprout3', 'Effie', 'Prout', 'eprout3@ezinearticles.com', 'MvgAaVbFC');
 insert into users (username, first_name, last_name, email, password) values ('asymon4', 'Almeda', 'Symon', 'asymon4@vinaora.com', 'OgPJMA4Phi');
 

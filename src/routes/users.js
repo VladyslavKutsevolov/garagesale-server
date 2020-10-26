@@ -40,9 +40,8 @@ module.exports = db => {
     db.query(`
       SELECT username
       FROM users;`)
-      .then(data => {
-        const listOfUsers = data.rows
-        res.json({listOfUsers})
+      .then(({ rows: username }) => {
+        response.json(username);
       })
       .catch(err => console.log('query Error', err))
   });
