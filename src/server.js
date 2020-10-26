@@ -12,23 +12,50 @@ const cookieSession = require('cookie-session');
 const startChat = require("./chatSocket")
 const expressWs = require('express-ws')(app);
 const util = require('util')
-// app.ws('/chat') -- handle chat route like this. 
-// add WebSocket routes (almost) the same way you add other routes
+
+// Grab underlying web server in order to access client details
+const aWss = expressWs.getWss('/');
+
+// Store clients in array
+const clients = [];
+
 app.ws('/chat', function(ws, req) {
 
   ws.onmessage = msg => {
-    // console.log("msgJSON", JSON.parse(msg.data))
     const data = JSON.parse(msg.data)
-    console.log("data received", data)
     if (data.type === 'message') {
+      console.log("message data received", data)
       console.log("Server received data type message")
-      ws.send(JSON.stringify({type: 'message', payload: data.payload}));
+      clients.forEach((client) => {
+        client.send(JSON.stringify({type: 'message', payload: data.payload}));
+        console.log("Server sent on message")
+      })
+
     };
     if (data.type === 'join') {
-      console.log("Server received data type join")
-      ws.send(JSON.stringify({type: 'join', payload: data.payload}));
+      console.log("Server received data type join clients length is", clients.length)
+      clients.forEach((client) => {
+        client.send(JSON.stringify({type: 'join', payload: data.payload}));
+        console.log("Server sent on join announcement")
+      })
+      clients.push(ws)
+      console.log("after push clients length is", clients.length)
+
+    }
+    if (data.type === 'leave') {
+      console.log("Client disconnected")
+      console.log("websocket left", ws)
+      ws.send(JSON.stringify({type: 'leave', payload: data.payload}));
     }
   };
+
+
+  ws.onclose = event => {
+    console.log("close event", event.target)
+    clients.splice(clients.indexOf(event.target), 1)
+    console.log(clients.length)
+  };
+
 });
 
 const whitelist = ['http://localhost:3001', 'http://localhost:3000']
