@@ -36,6 +36,17 @@ const verifyPassword = async (username, password, db) => {
 };
 
 module.exports = db => {
+  router.get("/", (req, res) => {
+    db.query(`
+      SELECT username
+      FROM users;`)
+      .then(data => {
+        const listOfUsers = data.rows
+        res.json({listOfUsers})
+      })
+      .catch(err => console.log('query Error', err))
+  });
+
   router.post("/login", async (req, res) => {
     const user = req.body;
     try {
@@ -62,5 +73,11 @@ module.exports = db => {
     
   });
   
+  router.post('/logout', (req, res) => {
+    req.session = null;
+    return res
+      .json({ message: "Succesfully logged out" });
+  })
+
   return router;
 };
