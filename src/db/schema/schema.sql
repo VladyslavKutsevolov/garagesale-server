@@ -2,8 +2,6 @@ DROP TABLE IF EXISTS users
 CASCADE;
 DROP TABLE IF EXISTS messages
 CASCADE;
-DROP TABLE IF EXISTS locations
-CASCADE;
 DROP TABLE IF EXISTS garage_sales
 CASCADE;
 DROP TABLE IF EXISTS products
@@ -33,17 +31,6 @@ CREATE TABLE messages
   read_at TIMESTAMP NOT NULL
 );
 
-CREATE TABLE locations
-(
-  id SERIAL PRIMARY KEY NOT NULL,
-  street VARCHAR(255),
-  postcode VARCHAR(50),
-  city VARCHAR(255) NOT NULL,
-  province VARCHAR(50),
-  longitude VARCHAR(255),
-  latitude VARCHAR(255)
-);
-
 CREATE TABLE garage_sales
 (
   id SERIAL PRIMARY KEY NOT NULL,
@@ -51,8 +38,9 @@ CREATE TABLE garage_sales
   title VARCHAR(255) NOT NULL,
   description TEXT,
   cover_photo_url TEXT,
-  created_at TIMESTAMP NOT NULL,
-  location_id INTEGER REFERENCES locations(id) ON DELETE CASCADE
+  city VARCHAR(255) NOT NULL,
+  province VARCHAR(50),
+  created_at TIMESTAMP NOT NULL
 );
 
 CREATE TABLE products
