@@ -16,17 +16,16 @@ const util = require('util')
 // add WebSocket routes (almost) the same way you add other routes
 app.ws('/chat', function(ws, req) {
 
-
-  ws.on('message', function(msg) {
-    const data = JSON.parse(msg);
-    console.log("message received", msg)
-    console.log("message type received", msg.data)
-    console.log("message payload received", msg.payload);
+  ws.onmessage = msg => {
+    // console.log("msgJSON", JSON.parse(msg.data))
+    console.log("mesage", msg)
+    const data = JSON.parse(msg.data)
+    console.log("mesage.data", data)
+    console.log("msg type", data.payload)
     if (msg.type === 'message') {
-      ws.send({ type: 'message', payload: msg});
+      ws.send(JSON.stringify({type: 'message', payload: data.payload}));
     }
-  });
-
+  };
 });
 
 const whitelist = ['http://localhost:3001', 'http://localhost:3000']
