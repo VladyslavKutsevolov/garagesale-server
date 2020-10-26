@@ -51,7 +51,7 @@ CREATE TABLE garage_sales
   title VARCHAR(255) NOT NULL,
   description TEXT,
   cover_photo_url TEXT,
-  created_at DATE NOT NULL,
+  created_at TIMESTAMP NOT NULL,
   location_id INTEGER REFERENCES locations(id) ON DELETE CASCADE
 );
 
