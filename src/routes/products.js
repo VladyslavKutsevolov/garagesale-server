@@ -43,18 +43,18 @@ const addNewProduct = function (item, db) {
   return db.query(queryString, valueArray).then((data) => data.rows);
 };
 
-module.exports = db => {
-  router.get("/", (req, res) => {
-    // change req.params to find correct id 
+module.exports = (db) => {
+  router.get('/', (req, res) => {
+    // change req.params to find correct id
     db.query(`SELECT * FROM products WHERE sale_id = $1;`, req.params.id)
-      .then(data => {
-        const listOfProducts = data.rows
-        res.json({listOfProducts})
+      .then((data) => {
+        const listOfProducts = data.rows;
+        res.json({ listOfProducts });
       })
       .catch((err) => console.log('query Error', err));
   });
 
-  router.post('/new', upload.single('product_img'), (req, res) => {
+  router.post('/new', upload.single('productImg'), (req, res) => {
     const parseBodyValues = JSON.parse(JSON.stringify(req.body));
     const formFieldValues = {
       ...parseBodyValues,
