@@ -27,5 +27,8 @@
     "helmet": "^3.18.0",
     "http": "0.0.1-security",
     "pg": "^7.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.6"
   }
 }

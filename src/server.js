@@ -11,18 +11,19 @@ const PORT = process.env.PORT || 3001;
 const cookieSession = require('cookie-session');
 const startChat = require("./chatSocket")
 const expressWs = require('express-ws')(app);
-
-
-
-
+const util = require('util')
 // app.ws('/chat') -- handle chat route like this. 
 // add WebSocket routes (almost) the same way you add other routes
 app.ws('/chat', function(ws, req) {
 
 
   ws.on('message', function(msg) {
+    const data = JSON.parse(msg);
+    console.log("message received", msg)
+    console.log("message type received", msg.data)
+    console.log("message payload received", msg.payload);
     if (msg.type === 'message') {
-      ws.send(JSON.stringify({ type: 'message', payload: msg}));
+      ws.send({ type: 'message', payload: msg});
     }
   });
 
