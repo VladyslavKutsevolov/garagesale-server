@@ -1,23 +1,23 @@
 insert into users
-  (username, first_name, last_name, email, password)
+  (username, first_name, last_name, email, phone, password)
 values
-  ('tester', 'Inga', 'McIlenna', 'imcilenna0@shinystat.com', 'n9lyqb28KS');
+  ('tester', 'Inga', 'McIlenna', 'tester@test.com', '12042938913' 'tester');
 insert into users
-  (username, first_name, last_name, email, password)
+  (username, first_name, last_name, email, phone, password)
 values
-  ('kcoward1', 'Karilynn', 'Coward', 'kcoward1@smh.com.au', 'RKDXgdl');
+  ('jaeyoung', 'jaeyoung', 'kim', 'youngs_89@hotmail.com', '12042938913','password');
 insert into users
-  (username, first_name, last_name, email, password)
+  (username, first_name, last_name, email, phone, password)
 values
-  ('cbayston2', 'Clemens', 'Bayston', 'cbayston2@statcounter.com', 'pJm9BYE2PAQL');
+  ('cbayston2', 'Clemens', 'Bayston', 'cbayston2@statcounter.com', '12345678901','pJm9BYE2PAQL');
 insert into users
-  (username, first_name, last_name, email, password)
+  (username, first_name, last_name, email, phone, password)
 values
-  ('eprout3', 'Effie', 'Prout', 'eprout3@ezinearticles.com', 'MvgAaVbFC');
+  ('eprout3', 'Effie', 'Prout', 'eprout3@ezinearticles.com', '1429394293','MvgAaVbFC');
 insert into users
-  (username, first_name, last_name, email, password)
+  (username, first_name, last_name, email, phone, password)
 values
-  ('asymon4', 'Almeda', 'Symon', 'asymon4@vinaora.com', 'OgPJMA4Phi');
+  ('asymon4', 'Almeda', 'Symon', 'asymon4@vinaora.com', '18001001004','OgPJMA4Phi');
 
 insert into garage_sales
   (seller_id, title, cover_photo_url, description, city, province, created_at)
