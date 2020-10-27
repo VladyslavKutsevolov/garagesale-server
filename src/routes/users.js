@@ -36,26 +36,42 @@ const verifyPassword = async (username, password, db) => {
 };
 
 module.exports = db => {
+  /*
   router.get("/", (req, res) => {
     db.query(`
       SELECT username
       FROM users;`)
       .then(data => {
-        const listOfUsers = data.rows
-        res.json({listOfUsers})
+        res.json(data.rows)
       })
       .catch(err => console.log('query Error', err))
   });
+  */
+
+  router.get("/", (req, res) => {
+    const userCookie = req.session.userID;
+
+    db.query(`
+      SELECT username
+      FROM users
+      WHERE id = $1;
+    `, [userCookie])
+      .then(data => {
+        res.json(data.rows[0])
+      })
+
+  })
 
   router.post("/login", async (req, res) => {
     const user = req.body;
+    console.log('user data', user)
     try {
       const userExists = await checkUserExists(user, db);
       if (userExists) {
         const loggedInUserID = await verifyPassword(user.username, user.password, db);
         if (loggedInUserID) {
           req.session.userID = loggedInUserID;
-          return res.redirect('/')
+          return res.status(200).send({username: user.username, message: "Succesfully Login"});
         }
         return res
           .status(401)
