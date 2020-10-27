@@ -10,7 +10,7 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 const cookieSession = require('cookie-session');
 const logger = require('morgan');
-
+ 
 app.use(logger('dev'));
 app.use(
   cookieSession({
@@ -29,6 +29,7 @@ db.connect()
 const sales = require('./routes/sales');
 const products = require('./routes/products');
 const usersRoutes = require('./routes/users');
+const sendText = require('./routes/send-text');
 
 app.use(cors());
 app.use(helmet());
@@ -43,6 +44,7 @@ app.get('/', (req, res) => {
 app.use('/sales', sales(db));
 app.use('/products', products(db));
 app.use('/users', usersRoutes(db));
+app.use('/send-text', sendText())
 
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}.`);

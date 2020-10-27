@@ -1,7 +1,7 @@
 insert into users
   (username, first_name, last_name, email, password)
 values
-  ('imcilenna0', 'Inga', 'McIlenna', 'imcilenna0@shinystat.com', 'n9lyqb28KS');
+  ('tester', 'Inga', 'McIlenna', 'imcilenna0@shinystat.com', 'n9lyqb28KS');
 insert into users
   (username, first_name, last_name, email, password)
 values
