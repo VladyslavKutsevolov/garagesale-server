@@ -30,7 +30,7 @@ module.exports = db => {
       WHERE product_id = $1;
     `, [productId])
       .then((data) => {
-        const listOfComment = data.rows;
+        const listOfComments = data.rows;
         res.json({ listOfComments });
       })
       .catch(err => console.log('query Error', err))
@@ -72,18 +72,21 @@ module.exports = db => {
   });
 
 
-  router.delete('/:productId/:commentId', (req, res) => {
+  router.delete('/:commentId/delete', (req, res) => {
 
     const userId = req.session.userId
-
-    const query = `DELETE FROM comments WHERE comments.id = $1 AND author_id = $2;`;
-    db.query(query, [req.params.commentId, userId])
-      .then(() => {
-        res.json({ success: true });
-      })
-      .catch((err) => {
-        res.json({ success: false, error: err });
-      });
+    if (userId) {
+      const query = `DELETE FROM comments WHERE comments.id = $1 AND author_id = $2;`;
+      db.query(query, [req.params.commentId, userId])
+        .then(() => {
+          res.json({ success: true });
+        })
+        .catch((err) => {
+          res.json({ success: false, error: err });
+        });
+    } else {
+      alert("You cannot delete a comment if you are not logged in")
+    }
   });
   
   return router;
