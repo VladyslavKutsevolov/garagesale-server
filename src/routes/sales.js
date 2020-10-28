@@ -31,7 +31,7 @@ const upload = multer({
 
 const addNewGarage = function (garage, db) {
   const queryString = `
-  INSERT INTO garage_sales (seller_id, title, description, cover_photo_url, city, province, created_at) VALUES ($1, $2, $3, $4, $5, $6, $7);`;
+  INSERT INTO garage_sales (seller_id, title, description, cover_photo_url, city, province, created_at) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING*;`;
 
   const valueArray = [
     garage.seller_id,
@@ -42,7 +42,7 @@ const addNewGarage = function (garage, db) {
     garage.province,
     garage.created_at,
   ];
-  return db.query(queryString, valueArray).then((data) => data.rows);
+  return db.query(queryString, valueArray);
 };
 
 module.exports = (db) => {
@@ -99,14 +99,16 @@ module.exports = (db) => {
     const parseBodyValues = JSON.parse(JSON.stringify(req.body));
     const formFieldValues = {
       ...parseBodyValues,
-      location_id: 1,
       created_at: new Date(Date.now()),
       cover_photo_url: req.file.location,
     };
 
     addNewGarage(formFieldValues, db)
-      .then((message) => {
-        return res.json({ message: 'New Garage is created!' });
+      .then(({ rows }) => {
+        return res.json({
+          message: 'New Sale is created!',
+          sale: rows[0],
+        });
       })
       .catch((err) => {
         console.log(err.message);
