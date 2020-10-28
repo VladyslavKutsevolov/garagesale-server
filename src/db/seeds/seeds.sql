@@ -97,24 +97,24 @@ values
 insert into product_categories
   (product_id, category_id)
 values
-  (2, 2);
+  (2, 1);
 insert into product_categories
   (product_id, category_id)
 values
-  (2, 2);
+  (5, 1);
 insert into product_categories
   (product_id, category_id)
 values
-  (2, 2);
+  (6, 3);
 insert into product_categories
   (product_id, category_id)
 values
-  (2, 2);
+  (7, 2);
 insert into product_categories
   (product_id, category_id)
 values
-  (2, 2);
+  (8, 4);
 insert into product_categories
   (product_id, category_id)
 values
-  (1, 2);
+  (10, 5);
