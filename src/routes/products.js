@@ -54,6 +54,23 @@ module.exports = (db) => {
       .catch((err) => console.log('query Error', err));
   });
 
+  router.get('/:id', (req, res) => {
+    const productId = req.params.id;
+    const queryString = `
+    SELECT garage_sales.title, users.username, users.phone, products.*
+    FROM products
+    JOIN garage_sales ON garage_sales.id = sale_id
+    JOIN users ON garage_sales.id = users.id
+    WHERE products.id = $1;`;
+
+    db.query(queryString, [productId])
+      .then((data) => {
+        const product = data.rows;
+        res.json({ product });
+      })
+      .catch((err) => console.log('query Error', err));
+  });
+
   //Filter items by category
   router.get('/category/:name', (req, res) => {
     db.query(`
