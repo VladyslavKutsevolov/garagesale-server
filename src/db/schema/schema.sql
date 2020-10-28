@@ -22,14 +22,13 @@ CREATE TABLE users
   password VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE messages
+CREATE TABLE comments
 (
   id SERIAL PRIMARY KEY NOT NULL,
-  to_user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-  from_user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+  author_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+  product_id INTEGER REFERENCES products(id) ON DELETE CASCADE,
   created_at TIMESTAMP NOT NULL,
-  message_text text NOT NULL,
-  read_at TIMESTAMP NOT NULL
+  comment_text text NOT NULL,
 );
 
 CREATE TABLE garage_sales
