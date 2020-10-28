@@ -54,6 +54,21 @@ module.exports = (db) => {
       .catch((err) => console.log('query Error', err));
   });
 
+  //Filter items by category
+  router.get('/category/:name', (req, res) => {
+    db.query(`
+    SELECT products.* FROM products
+    JOIN product_categories ON product_id = products.id
+    JOIN categories ON categories.id = category_id
+    WHERE categories.name = $1;
+    `, [req.params.name])
+      .then((data) => {
+        const listOfProducts = data.rows;
+        res.json({ listOfProducts });
+      })
+      .catch((err) => console.log('query Error', err));
+  });
+
   router.post('/new', upload.single('productImg'), (req, res) => {
     const parseBodyValues = JSON.parse(JSON.stringify(req.body));
     const formFieldValues = {

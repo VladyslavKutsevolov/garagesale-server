@@ -81,12 +81,37 @@ module.exports = (db) => {
   router.get('/:id', (req, res) => {
     const saleId = req.params.id;
     const queryString = `
-    SELECT products.*
+    SELECT garage_sales.title, users.username, users.phone, products.*
     FROM products
     JOIN garage_sales ON garage_sales.id = sale_id
+    JOIN users ON garage_sales.id = users.id
     WHERE sale_id = $1;`;
 
     db.query(queryString, [saleId])
+      .then((data) => {
+        const garage = data.rows;
+        res.json({ garage });
+      })
+      .catch((err) => console.log('query Error', err));
+  });
+
+  router.get('/city/:name', (req, res) => {
+    const cityName = req.params.name;
+    const queryString = `SELECT title, city FROM garage_sales WHERE city = $1;`;
+
+    db.query(queryString, [cityName])
+      .then((data) => {
+        const garage = data.rows;
+        res.json({ garage });
+      })
+      .catch((err) => console.log('query Error', err));
+  });
+
+  router.get('/province/:name', (req, res) => {
+    const provinceName = req.params.name;
+    const queryString = `SELECT title, city FROM garage_sales WHERE province = $1;`;
+
+    db.query(queryString, [provinceName])
       .then((data) => {
         const garage = data.rows;
         res.json({ garage });
@@ -130,15 +155,3 @@ module.exports = (db) => {
 
   return router;
 };
-
-/*
-SQL for category filter 
-
-SELECT garage_sales.title, actegories.name FROM garage_sales
-JOIN products ON garage_sales.id = sale_id
-JOIN product_categories ON products.id = product_id
-JOIN categories ON product_categories.id = categories.id
-WHERE categories.name = 'Book'
-;
-
-*/
