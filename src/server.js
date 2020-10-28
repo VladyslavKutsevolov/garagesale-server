@@ -29,6 +29,7 @@ db.connect()
 const sales = require('./routes/sales');
 const products = require('./routes/products');
 const usersRoutes = require('./routes/users');
+const comments = require('./routes/comments');
 const sendText = require('./routes/send-text');
 
 app.use(cors());
@@ -45,6 +46,7 @@ app.use('/sales', sales(db));
 app.use('/products', products(db));
 app.use('/users', usersRoutes(db));
 app.use('/send-text', sendText())
+app.use('/comments', comments(db))
 
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}.`);
