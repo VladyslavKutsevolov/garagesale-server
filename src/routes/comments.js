@@ -23,18 +23,15 @@ module.exports = db => {
   router.get("/:productId", (req, res) => {
     
     const productId = req.params.productId;
-
-    db.query(`
-      SELECT *
-      FROM comments
-      WHERE product_id = $1;
-    `, [productId])
+    console.log("prductid", productId)
+    const queryString = `SELECT * FROM comments WHERE product_id = $1;`;
+    db.query(queryString, [productId])
       .then((data) => {
         const listOfComments = data.rows;
+        console.log("coments from query", listOfComments)
         res.json({ listOfComments });
       })
       .catch(err => console.log('query Error', err))
-
   })
 
 
@@ -53,7 +50,7 @@ module.exports = db => {
           comment_text
         ) VALUES (
           $1, $2, $3
-        );
+        ) RETURNING* ; 
       `;
       const queryParams = [userId, productId, comment]
 
@@ -61,8 +58,9 @@ module.exports = db => {
         const productExists = await checkProductExists(productId, db);
         if (productExists) {
           db.query(queryString, queryParams)
-            .then((data) => data.rows)
-        }
+            // .then((data) => res.json({message: "comment added", listOfComments: data.rows}))
+          console.log("datarows", data.rows)
+          }
       } catch (e) {
         return res
           .status(500)
