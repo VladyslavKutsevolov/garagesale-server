@@ -1,7 +1,5 @@
 DROP TABLE IF EXISTS users
 CASCADE;
-DROP TABLE IF EXISTS messages
-CASCADE;
 DROP TABLE IF EXISTS garage_sales
 CASCADE;
 DROP TABLE IF EXISTS products
@@ -9,6 +7,8 @@ CASCADE;
 DROP TABLE IF EXISTS categories
 CASCADE;
 DROP TABLE IF EXISTS product_categories
+CASCADE;
+DROP TABLE IF EXISTS comments
 CASCADE;
 
 CREATE TABLE users
@@ -22,14 +22,6 @@ CREATE TABLE users
   password VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE comments
-(
-  id SERIAL PRIMARY KEY NOT NULL,
-  author_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-  product_id INTEGER REFERENCES products(id) ON DELETE CASCADE,
-  created_at TIMESTAMP NOT NULL,
-  comment_text text NOT NULL,
-);
 
 CREATE TABLE garage_sales
 (
@@ -66,4 +58,13 @@ CREATE TABLE product_categories
   id SERIAL PRIMARY KEY NOT NULL,
   product_id INTEGER REFERENCES products(id) ON DELETE CASCADE,
   category_id INTEGER REFERENCES categories(id) ON DELETE CASCADE
+);
+
+CREATE TABLE comments
+(
+  id SERIAL PRIMARY KEY NOT NULL,
+  author_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+  product_id INTEGER REFERENCES products(id) ON DELETE CASCADE,
+  created_at TIMESTAMP DEFAULT NOW() NOT NULL,
+  comment_text TEXT NOT NULL
 );

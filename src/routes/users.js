@@ -49,7 +49,7 @@ module.exports = db => {
   */
 
   router.get("/", (req, res) => {
-    const userCookie = req.session.userID;
+    const userCookie = req.session.userId;
 
     db.query(`
       SELECT username
@@ -68,9 +68,9 @@ module.exports = db => {
     try {
       const userExists = await checkUserExists(user, db);
       if (userExists) {
-        const loggedInUserID = await verifyPassword(user.username, user.password, db);
-        if (loggedInUserID) {
-          req.session.userID = loggedInUserID;
+        const loggedInUserId = await verifyPassword(user.username, user.password, db);
+        if (loggedInUserId) {
+          req.session.userId = loggedInUserId;
           return res.status(200).send({username: user.username, message: "Succesfully Login"});
         }
         return res
