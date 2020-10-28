@@ -72,9 +72,12 @@ module.exports = db => {
   });
 
 
-  router.delete('/:id', (req, res) => {
-    const query = 'DELETE FROM garage_sales WHERE id = $1;';
-    db.query(query, [req.params.id])
+  router.delete('/:productId/:commentId', (req, res) => {
+
+    const userId = req.session.userId
+
+    const query = `DELETE FROM comments WHERE comments.id = $1 AND author_id = $2;`;
+    db.query(query, [req.params.commentId, userId])
       .then(() => {
         res.json({ success: true });
       })
