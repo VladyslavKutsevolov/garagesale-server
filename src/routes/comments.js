@@ -24,11 +24,22 @@ module.exports = db => {
     
     const productId = req.params.productId;
     console.log("prductid", productId)
-    const queryString = `SELECT * FROM comments WHERE product_id = $1;`;
+    // const queryString = `SELECT * FROM comments WHERE product_id = $1;`;
+    const queryString = `
+      SELECT 
+        comments.id,
+        product_id,
+        author_id, 
+        created_at, 
+        comment_text, 
+        users.username as author
+      FROM comments 
+      INNER JOIN users ON users.id = comments.author_id 
+      WHERE comments.product_id = $1;`
     db.query(queryString, [productId])
       .then((data) => {
         const listOfComments = data.rows;
-        console.log("coments from query", listOfComments)
+
         res.json({ listOfComments });
       })
       .catch(err => console.log('query Error', err))
