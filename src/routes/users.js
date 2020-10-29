@@ -72,6 +72,7 @@ module.exports = db => {
         const loggedInUserId = await verifyPassword(user.username, user.password, db);
         if (loggedInUserId) {
           req.session.userId = loggedInUserId;
+          console.log("req session", req.session.userId)
           return res.status(200).send({username: user.username, message: "Succesfully Login"});
         }
         return res
