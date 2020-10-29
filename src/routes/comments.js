@@ -48,9 +48,10 @@ module.exports = db => {
 
   // Add a new comment to a product
   router.post("/:productId/newComment", async (req, res) => {
-
+    console.log("new coment requested")
     const productId = req.params.productId;
     const comment = req.body
+    // const userId = req.session.userId
     const userId = req.session.userId
     if (userId) {
 
@@ -82,7 +83,8 @@ module.exports = db => {
 
 
   router.delete('/:commentId/delete', (req, res) => {
-
+    
+    // Spoof user ID for now
     const userId = req.session.userId
     if (userId) {
       const query = `DELETE FROM comments WHERE comments.id = $1 AND author_id = $2;`;

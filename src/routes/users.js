@@ -76,7 +76,7 @@ module.exports = db => {
         return res
           .status(401)
           .json({ message: "Invalid password" });
-      }else{
+      } else{
         return res
           .status(401)
           .json({ message: "Invalid username" });
