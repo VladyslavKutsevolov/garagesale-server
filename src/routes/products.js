@@ -30,7 +30,7 @@ const upload = multer({
 });
 
 const addNewProduct = function (item, db) {
-  const queryString = `INSERT INTO products (title, description, image_url, price, sale_id) VALUES ($1, $2, $3, $4, $5);`;
+  const queryString = `INSERT INTO products (title, description, image_url, price, sale_id) VALUES ($1, $2, $3, $4, $5) RETURNING*;`;
 
   const valueArray = [
     item.title,
@@ -40,16 +40,33 @@ const addNewProduct = function (item, db) {
     item.sale_id,
   ];
 
-  return db.query(queryString, valueArray).then((data) => data.rows);
+  return db.query(queryString, valueArray);
 };
 
 module.exports = (db) => {
-  router.get('/', (req, res) => {
+  router.get('/:id', (req, res) => {
     // change req.params to find correct id
     db.query(`SELECT * FROM products WHERE sale_id = $1;`, req.params.id)
       .then((data) => {
         const listOfProducts = data.rows;
         res.json({ listOfProducts });
+      })
+      .catch((err) => console.log('query Error', err));
+  });
+
+  router.get('/:id', (req, res) => {
+    const productId = req.params.id;
+    const queryString = `
+    SELECT garage_sales.title, users.username, users.phone, products.*
+    FROM products
+    JOIN garage_sales ON garage_sales.id = sale_id
+    JOIN users ON garage_sales.id = users.id
+    WHERE products.id = $1;`;
+
+    db.query(queryString, [productId])
+      .then((data) => {
+        const product = data.rows;
+        res.json({ product });
       })
       .catch((err) => console.log('query Error', err));
   });
@@ -73,13 +90,15 @@ module.exports = (db) => {
     const parseBodyValues = JSON.parse(JSON.stringify(req.body));
     const formFieldValues = {
       ...parseBodyValues,
-      sale_id: 1,
       image_url: req.file.location,
     };
 
     addNewProduct(formFieldValues, db)
-      .then((message) => {
-        return res.json({ message: 'New item is added on your Garage!' });
+      .then(({ rows }) => {
+        return res.json({
+          message: 'New item is added on your Garage!',
+          product: rows[0],
+        });
       })
       .catch((err) => {
         console.log(err.message);
