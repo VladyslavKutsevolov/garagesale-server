@@ -23,7 +23,7 @@ module.exports = db => {
   router.get("/:productId", (req, res) => {
     
     const productId = req.params.productId;
-    console.log("prductid", productId)
+
     // const queryString = `SELECT * FROM comments WHERE product_id = $1;`;
     const queryString = `
       SELECT 
@@ -39,7 +39,6 @@ module.exports = db => {
     db.query(queryString, [productId])
       .then((data) => {
         const listOfComments = data.rows;
-
         res.json({ listOfComments });
       })
       .catch(err => console.log('query Error', err))
@@ -48,7 +47,6 @@ module.exports = db => {
 
   // Add a new comment to a product
   router.post("/:productId/newComment", async (req, res) => {
-    console.log("new coment requested")
     const productId = req.params.productId;
     const comment = req.body
     // const userId = req.session.userId
