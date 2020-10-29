@@ -48,16 +48,17 @@ module.exports = db => {
   });
   */
 
-  router.get("/", (req, res) => {
-    const userCookie = req.session.userID;
+  router.get("/:username", (req, res) => {
+    const username = req.params.username;
 
     db.query(`
-      SELECT username
+      SELECT username, email, phone
       FROM users
-      WHERE id = $1;
-    `, [userCookie])
+      WHERE username = $1;
+    `, [username])
       .then(data => {
-        res.json(data.rows[0])
+        const loginUser = data.rows[0]
+        res.json({ loginUser })
       })
 
   })
