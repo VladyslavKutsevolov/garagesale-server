@@ -60,7 +60,11 @@ module.exports = db => {
       `;
       const queryParams = [authorId, productId, commentData]
       db.query(queryString, queryParams)
-        .then((data) => (console.log("datarows", data.rows)))
+        .then((data) => {
+          const returnedComment = data.rows[0];
+          res.json({returnedComment})
+        })
+
         .catch(e => console.log(e))
 
     }
@@ -70,10 +74,10 @@ module.exports = db => {
   router.delete('/:commentId/delete', (req, res) => {
     const { authorId } = req.body
     const commentId = req.params.commentId
-    const query = `DELETE FROM comments WHERE comments.id = $1 AND author_id = $2;`;
-    db.query(query, [commentId, authorId])
-      .then((res) => (console.log("deleted comment", res)))
-      .catch(e => console.log(e));
+    const query = `DELETE FROM comments WHERE comments.id = $1`;
+    db.query(query, [commentId])
+      .then(() => res.json({message: "comment deleted"}))
+      .catch(e => console.log(e))
   });
   
   return router;
