@@ -37,8 +37,7 @@ values
   ('MacBook', 'Maecenas ut massa quis augue luctus tincidunt. Nulla mollis molestie lorem.', 'https://images-na.ssl-images-amazon.com/images/I/71zny7BTRlL._AC_SL1500_.jpg', 1600.24, false, 1),
   ('Airpods', 'Pellentesque at nulla. Suspendisse potenti.', 'https://cdn1.expertreviews.co.uk/sites/expertreviews/files/2019/08/best_online_clothes_shops.jpg', 58.3, true, 2
 ),
-  ('Spinach - Frozen', 'Duis at velit eu est congue elementum.', 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/mbp13touch-space-
-select-202005
+  ('Spinach - Frozen', 'Duis at velit eu est congue elementum.', 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/mbp13touch-space-select-202005
 ?wid=892&hei=820&&qlt=80&.v=1587460552755', 51.75, true, 2
 ),
   ('Ostrich - Prime Cut', 'Integer ac leo.', 'https://upload.wikimedia.org/wikipedia/commons/e/e1/Apple_Keyboard_with_Numeric_Keyboard_9612.jpg', 22.63, true, 1),
