@@ -44,7 +44,7 @@ const addNewProduct = function (item, db) {
 };
 
 const editProduct = function (item, id, db) {
-  const queryString = `UPDATE products SET title=$1, description=$2, image_url=$3, price=$4, sold=$5 WHERE id = $6;`;
+  const queryString = `UPDATE products SET title=$1, description=$2, image_url=$3, price=$4, sold=$5 WHERE id = $6 RETURNING*;`;
 
   const valueArray = [
     item.title,
@@ -123,7 +123,6 @@ module.exports = (db) => {
 
   router.patch('/edit/:id', upload.single('productImg'), (req, res) => {
     const parseBodyValues = JSON.parse(JSON.stringify(req.body));
-    console.log('parseBodyValues:', parseBodyValues)
     const formFieldValues = {
       
       ...parseBodyValues,
@@ -133,6 +132,7 @@ module.exports = (db) => {
 
     editProduct(formFieldValues, productId, db)
       .then(({ rows }) => {
+        console.log('row in edit', rows);
         return res.json({
           message: 'Item information is updated!',
           product: rows[0],
