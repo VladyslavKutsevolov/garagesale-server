@@ -18,6 +18,7 @@ module.exports = () => {
         to: recipient,  // Text this number
         from: process.env.TWILIO_PHONE_NUMBER // From a valid Twilio number
     }).then((message) => console.log(message.body));
+    
   })
 
   return router;

@@ -43,6 +43,21 @@ const addNewProduct = function (item, db) {
   return db.query(queryString, valueArray);
 };
 
+const editProduct = function (item, id, db) {
+  const queryString = `UPDATE products SET title=$1, description=$2, image_url=$3, price=$4, sold=$5 WHERE id = $6 RETURNING*;`;
+
+  const valueArray = [
+    item.title,
+    item.description,
+    item.image_url,
+    item.price,
+    item.sold,
+    id
+  ];
+
+  return db.query(queryString, valueArray);
+};
+
 module.exports = (db) => {
   router.get('/:id', (req, res) => {
     // change req.params to find correct id
@@ -105,6 +120,57 @@ module.exports = (db) => {
         return res.status(500).json({ error: err.message });
       });
   });
+
+  router.patch('/edit/:id', upload.single('productImg'), (req, res) => {
+    const parseBodyValues = JSON.parse(JSON.stringify(req.body));
+    const formFieldValues = {
+      
+      ...parseBodyValues,
+      image_url: req.file.location,
+    };
+    const productId = req.params.id;
+
+    editProduct(formFieldValues, productId, db)
+      .then(({ rows }) => {
+        return res.json({
+          message: 'Item information is updated!',
+          product: rows[0],
+        });
+      })
+      .catch((err) => {
+        console.log(err.message);
+        return res.status(500).json({ error: err.message });
+      });
+  });
+
+  router.patch('/sold/:id', (req, res) => {
+    const query = `UPDATE products SET sold=TRUE WHERE id = $1 RETURNING*;`;
+    db.query(query, [req.params.id])
+      .then(({ rows }) => {
+        console.log('what is sold rows', rows)
+        return res.json({ 
+          message: "Product is sold Out!",
+          product: rows[0]
+        });
+      })
+      .catch((err) => {
+        res.json({ error: err });
+      });
+  });
+
+  router.delete('/delete/:id', (req, res) => {
+    const query = 'DELETE FROM products WHERE id = $1;';
+    db.query(query, [req.params.id])
+      .then(() => {
+        res.json({ 
+          message: "Product is deleted!",
+          product: {}
+        });
+      })
+      .catch((err) => {
+        res.json({ error: err });
+      });
+  })
 
   return router;
 };
