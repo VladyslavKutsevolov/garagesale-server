@@ -132,7 +132,6 @@ module.exports = (db) => {
 
     editProduct(formFieldValues, productId, db)
       .then(({ rows }) => {
-        console.log('row in edit', rows);
         return res.json({
           message: 'Item information is updated!',
           product: rows[0],
@@ -145,11 +144,13 @@ module.exports = (db) => {
   });
 
   router.patch('/sold/:id', (req, res) => {
-    const query = `UPDATE products SET sold=TRUE WHERE id = $1;`;
+    const query = `UPDATE products SET sold=TRUE WHERE id = $1 RETURNING*;`;
     db.query(query, [req.params.id])
-      .then(() => {
-        res.json({ 
-          message: "Product is sold Out!"
+      .then(({ rows }) => {
+        console.log('what is sold rows', rows)
+        return res.json({ 
+          message: "Product is sold Out!",
+          product: rows[0]
         });
       })
       .catch((err) => {
@@ -158,7 +159,7 @@ module.exports = (db) => {
   });
 
   router.delete('/delete/:id', (req, res) => {
-    const query = 'DELETE FROM products WHERE id = $1::INTEGER;';
+    const query = 'DELETE FROM products WHERE id = $1;';
     db.query(query, [req.params.id])
       .then(() => {
         res.json({ 
