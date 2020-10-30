@@ -127,11 +127,9 @@ module.exports = (db) => {
     const formFieldValues = {
       
       ...parseBodyValues,
-      //image_url: req.file.location,
+      image_url: req.file.location,
     };
     const productId = req.params.id;
-    console.log('productId:', productId)
-    console.log('formFieldValues:', formFieldValues);
 
     editProduct(formFieldValues, productId, db)
       .then(({ rows }) => {
@@ -143,6 +141,19 @@ module.exports = (db) => {
       .catch((err) => {
         console.log(err.message);
         return res.status(500).json({ error: err.message });
+      });
+  });
+
+  router.patch('/sold/:id', (req, res) => {
+    const query = `UPDATE products SET sold=TRUE WHERE id = $1;`;
+    db.query(query, [req.params.id])
+      .then(() => {
+        res.json({ 
+          message: "Product is sold Out!"
+        });
+      })
+      .catch((err) => {
+        res.json({ error: err });
       });
   });
 
