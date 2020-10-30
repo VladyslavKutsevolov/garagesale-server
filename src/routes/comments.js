@@ -20,23 +20,19 @@ const checkProductExists = (productId, db) => {
 
 module.exports = db => {
   
-  router.get("/:productId", (req, res) => {
+  router.get("/:saleId", (req, res) => {
     
-    const productId = req.params.productId;
+    const saleId = req.params.saleId;
 
     // const queryString = `SELECT * FROM comments WHERE product_id = $1;`;
     const queryString = `
-      SELECT 
-        comments.id,
-        product_id,
-        author_id, 
-        created_at, 
-        comment_text, 
-        users.username as author
-      FROM comments 
-      INNER JOIN users ON users.id = comments.author_id 
-      WHERE comments.product_id = $1;`
-    db.query(queryString, [productId])
+      select 
+        comments.*
+      from comments 
+      join products on products.id = comments.product_id 
+      join garage_sales on products.sale_id = garage_sales.id 
+      where garage_sales.id = $1;`
+    db.query(queryString, [saleId])
       .then((data) => {
         const listOfComments = data.rows;
         res.json({ listOfComments });
@@ -48,10 +44,10 @@ module.exports = db => {
   // Add a new comment to a product
   router.post("/:productId/newComment", async (req, res) => {
     const productId = req.params.productId;
-    const comment = req.body
+    const { authorId, commentData} = req.body
+    console.log("body", req.body)
     // const userId = req.session.userId
-    const userId = req.session.userId
-    if (userId) {
+    if (authorId) {
 
       const queryString = `
         INSERT INTO comments (
@@ -62,40 +58,22 @@ module.exports = db => {
           $1, $2, $3
         ) RETURNING* ; 
       `;
-      const queryParams = [userId, productId, comment]
+      const queryParams = [authorId, productId, commentData]
+      db.query(queryString, queryParams)
+        .then((data) => (console.log("datarows", data.rows)))
+        .catch(e => console.log(e))
 
-      try {
-        const productExists = await checkProductExists(productId, db);
-        if (productExists) {
-          db.query(queryString, queryParams)
-            // .then((data) => res.json({message: "comment added", listOfComments: data.rows}))
-          console.log("datarows", data.rows)
-          }
-      } catch (e) {
-        return res
-          .status(500)
-          .json({ message: e.message });
-      }
     }
   });
 
 
   router.delete('/:commentId/delete', (req, res) => {
-    
-    // Spoof user ID for now
-    const userId = req.session.userId
-    if (userId) {
-      const query = `DELETE FROM comments WHERE comments.id = $1 AND author_id = $2;`;
-      db.query(query, [req.params.commentId, userId])
-        .then(() => {
-          res.json({ success: true });
-        })
-        .catch((err) => {
-          res.json({ success: false, error: err });
-        });
-    } else {
-      alert("You cannot delete a comment if you are not logged in")
-    }
+    const { authorId } = req.body
+    const commentId = req.params.commentId
+    const query = `DELETE FROM comments WHERE comments.id = $1 AND author_id = $2;`;
+    db.query(query, [commentId, authorId])
+      .then((res) => (console.log("deleted comment", res)))
+      .catch(e => console.log(e));
   });
   
   return router;

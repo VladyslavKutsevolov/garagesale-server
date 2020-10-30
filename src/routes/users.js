@@ -52,12 +52,13 @@ module.exports = db => {
     const username = req.params.username;
 
     db.query(`
-      SELECT username, email, phone
+      SELECT username, email, phone, users.id
       FROM users
       WHERE username = $1;
     `, [username])
       .then(data => {
         const loginUser = data.rows[0]
+        console.log("loggedinuser", loginUser)
         res.json({ loginUser })
       })
 
@@ -72,8 +73,7 @@ module.exports = db => {
         const loggedInUserId = await verifyPassword(user.username, user.password, db);
         if (loggedInUserId) {
           req.session.userId = loggedInUserId;
-          console.log("req session", req.session.userId)
-          return res.status(200).send({username: user.username, message: "Succesfully Login"});
+          return res.status(200).send({username: user.username, message: "Succesfully hello Login"});
         }
         return res
           .status(401)
