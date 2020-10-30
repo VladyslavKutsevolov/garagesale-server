@@ -27,10 +27,11 @@ module.exports = db => {
     // const queryString = `SELECT * FROM comments WHERE product_id = $1;`;
     const queryString = `
       select 
-        comments.*
+        comments.*, users.username
       from comments 
       join products on products.id = comments.product_id 
-      join garage_sales on products.sale_id = garage_sales.id 
+      join garage_sales on products.sale_id = garage_sales.id
+      join users on comments.author_id = users.id 
       where garage_sales.id = $1;`
     db.query(queryString, [saleId])
       .then((data) => {
