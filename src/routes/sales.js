@@ -140,7 +140,7 @@ module.exports = (db) => {
   });
 
   //  Edit Garage
-  router.patch('/edit/:id', upload.single('saleImg'), (req, res) => {
+  router.put('/edit/:id', upload.single('saleImg'), (req, res) => {
     const parseBodyValues = JSON.parse(JSON.stringify(req.body));
     const formFieldValues = {
       ...parseBodyValues,
@@ -152,6 +152,7 @@ module.exports = (db) => {
 
     editGarage(formFieldValues, garageId, db)
       .then(({ rows }) => {
+        console.log('SERVER rows', rows)
         return res.json({
           message: 'Garage sale information is updated!',
           sale: rows[0],
