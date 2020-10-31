@@ -27,7 +27,7 @@ module.exports = db => {
     // const queryString = `SELECT * FROM comments WHERE product_id = $1;`;
     const queryString = `
       select 
-        comments.*, users.username
+        comments.*, users.username as author
       from comments 
       join products on products.id = comments.product_id 
       join garage_sales on products.sale_id = garage_sales.id
