@@ -81,7 +81,17 @@ module.exports = (db) => {
   router.get('/:id', (req, res) => {
     const saleId = req.params.id;
     const queryString = `
-    SELECT garage_sales.title, users.username, users.phone, products.*
+    SELECT 
+      garage_sales.title as sale_title, 
+      users.username, 
+      users.phone, 
+      products.id as product_id, 
+      products.title as product_title, 
+      products.image_url, 
+      products.price, 
+      products.sold, 
+      products.description, 
+      products.seller_id
     FROM products
     JOIN garage_sales ON garage_sales.id = sale_id
     JOIN users ON garage_sales.id = users.id
