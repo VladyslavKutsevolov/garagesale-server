@@ -45,6 +45,22 @@ const addNewGarage = function (garage, db) {
   return db.query(queryString, valueArray);
 };
 
+const editGarage = function (garage, id, db) {
+  const queryString = `
+  UPDATE garage_sales SET title=$1, description=$2, cover_photo_url=$3, city=$4, province=$5, created_at=$6 WHERE id = $7 RETURNING*;`;
+
+  const valueArray = [
+    garage.title,
+    garage.description,
+    garage.cover_photo_url,
+    garage.city,
+    garage.province,
+    garage.created_at,
+    id
+  ];
+  return db.query(queryString, valueArray);
+};
+
 module.exports = (db) => {
   // Get all sales
   router.get('/', (req, res) => {
@@ -137,8 +153,33 @@ module.exports = (db) => {
       });
   });
 
+  //  Edit Garage
+  router.put('/edit/:id', upload.single('saleImg'), (req, res) => {
+    const parseBodyValues = JSON.parse(JSON.stringify(req.body));
+    const formFieldValues = {
+      ...parseBodyValues,
+      created_at: new Date(Date.now()),
+      cover_photo_url: req.file.location,
+    };
+
+    const garageId = req.params.id;
+
+    editGarage(formFieldValues, garageId, db)
+      .then(({ rows }) => {
+        console.log('SERVER rows', rows)
+        return res.json({
+          message: 'Garage sale information is updated!',
+          sale: rows[0],
+        });
+      })
+      .catch((err) => {
+        console.log(err.message);
+        return res.status(500).json({ error: err.message });
+      });
+  });
+
   // Delete Garage
-  router.delete('/:id', (req, res) => {
+  router.delete('/delete/:id', (req, res) => {
     const query = 'DELETE FROM garage_sales WHERE id = $1;';
     db.query(query, [req.params.id])
       .then(() => {
