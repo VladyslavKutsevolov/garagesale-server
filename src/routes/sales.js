@@ -166,7 +166,6 @@ module.exports = (db) => {
 
     editGarage(formFieldValues, garageId, db)
       .then(({ rows }) => {
-        console.log('SERVER rows', rows)
         return res.json({
           message: 'Garage sale information is updated!',
           sale: rows[0],
