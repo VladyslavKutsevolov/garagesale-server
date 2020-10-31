@@ -43,6 +43,16 @@ const addNewProduct = function (item, db) {
   return db.query(queryString, valueArray);
 };
 
+const getAllCategoriesForSale = (saleId, db) => {
+  const searchQuery = `
+    SELECT *
+    FROM categories
+      JOIN products ON products.category_id = categories.id
+      JOIN garage_sales ON garage_sales.id = products.sale_id
+    WHERE garage_sales.id = $1;`;
+
+  return db.query(searchQuery, [saleId]);
+};
 module.exports = (db) => {
   router.get('/:id', (req, res) => {
     // change req.params to find correct id
@@ -71,14 +81,29 @@ module.exports = (db) => {
       .catch((err) => console.log('query Error', err));
   });
 
+  // Get all categories for  specific sale
+  router.get('/categories/:saleId', async (req, res) => {
+    const saleId = req.params.saleId;
+    try {
+      const { rows: categories } = await getAllCategoriesForSale(saleId, db);
+      console.log('cat', categories);
+      res.json({ categories });
+    } catch (e) {
+      res.status(500).json({ message: 'Fail to fetch categories', error: e });
+    }
+  });
+
   //Filter items by category
   router.get('/category/:name', (req, res) => {
-    db.query(`
+    console.log('req.params.name', req.params.name);
+    db.query(
+      `
     SELECT products.* FROM products
-    JOIN product_categories ON product_id = products.id
     JOIN categories ON categories.id = category_id
     WHERE categories.name = $1;
-    `, [req.params.name])
+    `,
+      [req.params.name]
+    )
       .then((data) => {
         const listOfProducts = data.rows;
         res.json({ listOfProducts });
