@@ -52,12 +52,22 @@ const editProduct = function (item, id, db) {
     item.image_url,
     item.price,
     item.sold,
-    id
+    id,
   ];
 
   return db.query(queryString, valueArray);
 };
 
+const getAllCategoriesForSale = (saleId, db) => {
+  const searchQuery = `
+    SELECT *
+    FROM categories
+      JOIN products ON products.category_id = categories.id
+      JOIN garage_sales ON garage_sales.id = products.sale_id
+    WHERE garage_sales.id = $1;`;
+
+  return db.query(searchQuery, [saleId]);
+};
 module.exports = (db) => {
   router.get('/:id', (req, res) => {
     // change req.params to find correct id
@@ -66,7 +76,9 @@ module.exports = (db) => {
         const listOfProducts = data.rows;
         res.json({ listOfProducts });
       })
-      .catch((err) => console.log('query Error', err));
+      .catch((err) =>
+        res.status(500).json({ message: 'Failed to load product' })
+      );
   });
 
   router.get('/:id', (req, res) => {
@@ -83,22 +95,41 @@ module.exports = (db) => {
         const product = data.rows;
         res.json({ product });
       })
-      .catch((err) => console.log('query Error', err));
+      .catch((err) =>
+        res.status(500).json({ message: 'Failed to load product' })
+      );
+  });
+
+  // Get all categories for  specific sale
+  router.get('/categories/:saleId', async (req, res) => {
+    const saleId = req.params.saleId;
+    try {
+      const { rows: categories } = await getAllCategoriesForSale(saleId, db);
+      console.log('cat', categories);
+      res.json({ categories });
+    } catch (e) {
+      res.status(500).json({ message: 'Failed to fetch categories', error: e });
+    }
   });
 
   //Filter items by category
   router.get('/category/:name', (req, res) => {
-    db.query(`
+    console.log('req.params.name', req.params.name);
+    db.query(
+      `
     SELECT products.* FROM products
-    JOIN product_categories ON product_id = products.id
     JOIN categories ON categories.id = category_id
     WHERE categories.name = $1;
-    `, [req.params.name])
+    `,
+      [req.params.name]
+    )
       .then((data) => {
         const listOfProducts = data.rows;
         res.json({ listOfProducts });
       })
-      .catch((err) => console.log('query Error', err));
+      .catch((err) =>
+        res.status(500).json({ message: 'Failed to fetch categories' })
+      );
   });
 
   router.post('/new', upload.single('productImg'), (req, res) => {
@@ -111,20 +142,21 @@ module.exports = (db) => {
     addNewProduct(formFieldValues, db)
       .then(({ rows }) => {
         return res.json({
-          message: 'New item is added on your Garage!',
+          message: 'New item is added to your Garage!',
           product: rows[0],
         });
       })
       .catch((err) => {
         console.log(err.message);
-        return res.status(500).json({ error: err.message });
+        return res
+          .status(500)
+          .json({ error: err.message, message: 'Failed add item' });
       });
   });
 
   router.patch('/edit/:id', upload.single('productImg'), (req, res) => {
     const parseBodyValues = JSON.parse(JSON.stringify(req.body));
     const formFieldValues = {
-      
       ...parseBodyValues,
       image_url: req.file.location,
     };
@@ -147,10 +179,10 @@ module.exports = (db) => {
     const query = `UPDATE products SET sold=TRUE WHERE id = $1 RETURNING*;`;
     db.query(query, [req.params.id])
       .then(({ rows }) => {
-        console.log('what is sold rows', rows)
-        return res.json({ 
-          message: "Product is sold Out!",
-          product: rows[0]
+        console.log('what is sold rows', rows);
+        return res.json({
+          message: 'Product is sold Out!',
+          product: rows[0],
         });
       })
       .catch((err) => {
@@ -162,15 +194,15 @@ module.exports = (db) => {
     const query = 'DELETE FROM products WHERE id = $1;';
     db.query(query, [req.params.id])
       .then(() => {
-        res.json({ 
-          message: "Product is deleted!",
-          product: {}
+        res.json({
+          message: 'Product is deleted!',
+          product: {},
         });
       })
       .catch((err) => {
         res.json({ error: err });
       });
-  })
+  });
 
   return router;
 };

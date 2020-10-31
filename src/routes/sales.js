@@ -57,26 +57,10 @@ module.exports = (db) => {
         const listOfSales = data.rows;
         res.json({ listOfSales });
       })
-      .catch((err) => console.log('query Error', err));
+      .catch((err) =>
+        res.status(500).json({ message: 'Failed to load Sales' })
+      );
   });
-
-  // Get sale by ID
-  /*
-  router.get("/:id", (req, res) => {
-    const saleId = req.params.id;
-    const queryString = `
-      SELECT * 
-      FROM garage_sales 
-      WHERE id = $1;`;
-
-    db.query(queryString, [saleId])
-      .then(data => {
-        const garage = data.rows
-        res.json({garage})
-      })
-      .catch(err => console.log('query Error', err))
-  });
-  */
 
   router.get('/:id', (req, res) => {
     const saleId = req.params.id;
@@ -102,7 +86,7 @@ module.exports = (db) => {
         const garage = data.rows;
         res.json({ garage });
       })
-      .catch((err) => console.log('query Error', err));
+      .catch((err) => res.status(500).json({ message: 'Failed to load Sale' }));
   });
 
   router.get('/city/:name', (req, res) => {
@@ -114,7 +98,7 @@ module.exports = (db) => {
         const garage = data.rows;
         res.json({ garage });
       })
-      .catch((err) => console.log('query Error', err));
+      .catch((err) => res.status(500).json({ message: 'Failed to load Sale' }));
   });
 
   router.get('/province/:name', (req, res) => {
@@ -126,7 +110,7 @@ module.exports = (db) => {
         const garage = data.rows;
         res.json({ garage });
       })
-      .catch((err) => console.log('query Error', err));
+      .catch((err) => res.status(500).json({ message: 'Failed to load Sale' }));
   });
 
   // Create new Garage
@@ -147,7 +131,9 @@ module.exports = (db) => {
       })
       .catch((err) => {
         console.log(err.message);
-        return res.status(500).json({ error: err.message });
+        return res
+          .status(500)
+          .json({ error: err.message, message: 'Failed to create Sale' });
       });
   });
 
@@ -156,10 +142,17 @@ module.exports = (db) => {
     const query = 'DELETE FROM garage_sales WHERE id = $1;';
     db.query(query, [req.params.id])
       .then(() => {
-        res.json({ success: true });
+        res.json({
+          success: true,
+          message: 'Garage sale was deleted successfully',
+        });
       })
       .catch((err) => {
-        res.json({ success: false, error: err });
+        res.status(500).json({
+          success: false,
+          error: err,
+          message: 'Fail to delete Sale',
+        });
       });
   });
 
