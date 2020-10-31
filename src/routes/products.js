@@ -147,7 +147,6 @@ module.exports = (db) => {
     const query = `UPDATE products SET sold=TRUE WHERE id = $1 RETURNING*;`;
     db.query(query, [req.params.id])
       .then(({ rows }) => {
-        console.log('what is sold rows', rows)
         return res.json({ 
           message: "Product is sold Out!",
           product: rows[0]
