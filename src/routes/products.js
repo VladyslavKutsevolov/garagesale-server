@@ -105,7 +105,7 @@ module.exports = (db) => {
     const saleId = req.params.saleId;
     try {
       const { rows: categories } = await getAllCategoriesForSale(saleId, db);
-      console.log('cat', categories);
+
       res.json({ categories });
     } catch (e) {
       res.status(500).json({ message: 'Failed to fetch categories', error: e });
@@ -113,18 +113,21 @@ module.exports = (db) => {
   });
 
   //Filter items by category
-  router.get('/category/:name', (req, res) => {
+  router.get('/category/:name/:saleId', (req, res) => {
     console.log('req.params.name', req.params.name);
+    console.log('req.params.name', req.params.saleId);
     db.query(
       `
     SELECT products.* FROM products
-    JOIN categories ON categories.id = category_id
-    WHERE categories.name = $1;
+      JOIN categories ON categories.id = category_id
+      JOIN garage_sales ON garage_sales.id = sale_id
+    WHERE categories.name = $1 AND garage_sales.id = $2;
     `,
-      [req.params.name]
+      [req.params.name, req.params.saleId]
     )
       .then((data) => {
         const listOfProducts = data.rows;
+        console.log('data.rows', data.rows);
         res.json({ listOfProducts });
       })
       .catch((err) =>
