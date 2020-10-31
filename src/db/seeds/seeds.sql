@@ -28,26 +28,6 @@ insert into garage_sales
 values
   (2, 'Jae Garage', 'https://image.freepik.com/free-vector/garage-sale-background_1365-40.jpg', 'Nulla justo. Aliquam quis turpis eget elit sodales scelerisque. Mauris sit amet eros.', 'Calgary', 'Alberta', '2020-03-09 14:08:48');
 
-
-
-
-insert into products
-  (title, description, image_url, price, sold, sale_id)
-values
-  ('MacBook', 'Maecenas ut massa quis augue luctus tincidunt. Nulla mollis molestie lorem.', 'https://images-na.ssl-images-amazon.com/images/I/71zny7BTRlL._AC_SL1500_.jpg', 1600.24, false, 1),
-  ('Airpods', 'Pellentesque at nulla. Suspendisse potenti.', 'https://cdn1.expertreviews.co.uk/sites/expertreviews/files/2019/08/best_online_clothes_shops.jpg', 58.3, true, 2
-),
-  ('Spinach - Frozen', 'Duis at velit eu est congue elementum.', 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/mbp13touch-space-select-202005
-?wid=892&hei=820&&qlt=80&.v=1587460552755', 51.75, true, 2
-),
-  ('Ostrich - Prime Cut', 'Integer ac leo.', 'https://upload.wikimedia.org/wikipedia/commons/e/e1/Apple_Keyboard_with_Numeric_Keyboard_9612.jpg', 22.63, true, 1),
-  ('Apple - Custard', 'Descrption',
-    'https://www.pngjoy.com/pngm/53/1199732_nike-shoe-men-s-nike-zoom-fly-flyknit.png', 14.33, false, 1),
-  ('Wine - Cahors Ac 2000, Clos', 'Morbi ut odio.', 'https://www.superebikes.ca/wp-content/uploads/2020/03/e-wild-s-black-2-560x560.jpg', 11.44, true, 2),
-  ('Lid - Translucent, 3.5 And 6 Oz', 'Etiam faucibus cursus urna. Ut tellus.', 'https://images.theconversation.com/files/107896/original/image-20160112-6996-1jahuzf.JPG?ixlib=rb-1.1.0&q=45&auto=format&w=1200&h=1200.0&fit=crop', 64.0, false, 1),
-  ('Wine - Zinfandel Rosenblum', 'In hac habitasse platea dictumst. Morbi vestibulum, velit id pretium iaculis, diam erat fermentum justo, nec condimentum neque sapien placerat ante.', 'https://i.pinimg.com/originals/3d/81/6e/3d816e5a023b6a96593a062f5e55895f.jpg', 57.22, false, 2),
-  ('V8 - Tropical Blend', 'Maecenas pulvinar lobortis est. Phasellus sit amet erat.', 'https://www.tesla.com/xNVh4yUEc3B9/04_Desktop.jpg', 20.75, false, 1);
-
 insert into categories
   (name)
 values
@@ -60,6 +40,23 @@ values
   ('Media'),
   ('Personal Care'),
   ('Appliances'),
-  ('Clothe'),
   ('Clothes'),
-  ('Tools');  
+  ('Tools');
+
+
+
+insert into products
+  (title, description, image_url, price, sold, sale_id, category_id)
+values
+  ('MacBook', 'Maecenas ut massa quis augue luctus tincidunt. Nulla mollis molestie lorem.', 'https://images-na.ssl-images-amazon.com/images/I/71zny7BTRlL._AC_SL1500_.jpg', 1600.24, false, 1, 2),
+  ('Airpods', 'Pellentesque at nulla. Suspendisse potenti.', 'https://cdn1.expertreviews.co.uk/sites/expertreviews/files/2019/08/best_online_clothes_shops.jpg', 58.3, true, 2, 2),
+  ('Spinach - Frozen', 'Duis at velit eu est congue elementum.', 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/mbp13touch-space-select-202005
+?wid=892&hei=820&&qlt=80&.v=1587460552755', 51.75, true, 2, 3),
+  ('Ostrich - Prime Cut', 'Integer ac leo.', 'https://upload.wikimedia.org/wikipedia/commons/e/e1/Apple_Keyboard_with_Numeric_Keyboard_9612.jpg', 22.63, true, 1, 5),
+  ('Apple - Custard', 'Descrption',
+    'https://www.pngjoy.com/pngm/53/1199732_nike-shoe-men-s-nike-zoom-fly-flyknit.png', 14.33, false, 1, 2),
+  ('Wine - Cahors Ac 2000, Clos', 'Morbi ut odio.', 'https://www.superebikes.ca/wp-content/uploads/2020/03/e-wild-s-black-2-560x560.jpg', 11.44, true, 2, 6),
+  ('Lid - Translucent, 3.5 And 6 Oz', 'Etiam faucibus cursus urna. Ut tellus.', 'https://images.theconversation.com/files/107896/original/image-20160112-6996-1jahuzf.JPG?ixlib=rb-1.1.0&q=45&auto=format&w=1200&h=1200.0&fit=crop', 64.0, false, 1, 8),
+  ('Wine - Zinfandel Rosenblum', 'In hac habitasse platea dictumst. Morbi vestibulum, velit id pretium iaculis, diam erat fermentum justo, nec condimentum neque sapien placerat ante.', 'https://www.tesla.com/xNVh4yUEc3B9/04_Desktop.jpg', 57.22, false, 2, 10),
+  ('V8 - Tropical Blend', 'Maecenas pulvinar lobortis est. Phasellus sit amet erat.', 'https://www.tesla.com/xNVh4yUEc3B9/04_Desktop.jpg', 20.75, false, 1, 6);
+
