@@ -61,7 +61,9 @@ module.exports = (db) => {
         const listOfProducts = data.rows;
         res.json({ listOfProducts });
       })
-      .catch((err) => console.log('query Error', err));
+      .catch((err) =>
+        res.status(500).json({ message: 'Failed to load product' })
+      );
   });
 
   router.get('/:id', (req, res) => {
@@ -78,7 +80,9 @@ module.exports = (db) => {
         const product = data.rows;
         res.json({ product });
       })
-      .catch((err) => console.log('query Error', err));
+      .catch((err) =>
+        res.status(500).json({ message: 'Failed to load product' })
+      );
   });
 
   // Get all categories for  specific sale
@@ -89,7 +93,7 @@ module.exports = (db) => {
       console.log('cat', categories);
       res.json({ categories });
     } catch (e) {
-      res.status(500).json({ message: 'Fail to fetch categories', error: e });
+      res.status(500).json({ message: 'Failed to fetch categories', error: e });
     }
   });
 
@@ -108,7 +112,9 @@ module.exports = (db) => {
         const listOfProducts = data.rows;
         res.json({ listOfProducts });
       })
-      .catch((err) => console.log('query Error', err));
+      .catch((err) =>
+        res.status(500).json({ message: 'Failed to fetch categories' })
+      );
   });
 
   router.post('/new', upload.single('productImg'), (req, res) => {
@@ -121,13 +127,15 @@ module.exports = (db) => {
     addNewProduct(formFieldValues, db)
       .then(({ rows }) => {
         return res.json({
-          message: 'New item is added on your Garage!',
+          message: 'New item is added to your Garage!',
           product: rows[0],
         });
       })
       .catch((err) => {
         console.log(err.message);
-        return res.status(500).json({ error: err.message });
+        return res
+          .status(500)
+          .json({ error: err.message, message: 'Failed add item' });
       });
   });
 
