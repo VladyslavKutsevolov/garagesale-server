@@ -6,8 +6,6 @@ DROP TABLE IF EXISTS products
 CASCADE;
 DROP TABLE IF EXISTS categories
 CASCADE;
-DROP TABLE IF EXISTS product_categories
-CASCADE;
 DROP TABLE IF EXISTS comments
 CASCADE;
 
@@ -35,6 +33,12 @@ CREATE TABLE garage_sales
   created_at TIMESTAMP NOT NULL
 );
 
+CREATE TABLE categories
+(
+  id SERIAL PRIMARY KEY NOT NULL,
+  name VARCHAR(255) NOT NULL
+);
+
 CREATE TABLE products
 (
   id SERIAL PRIMARY KEY NOT NULL,
@@ -44,21 +48,10 @@ CREATE TABLE products
   image_url TEXT,
   price VARCHAR(255),
   sold Boolean not NULL default false,
+  category_id INTEGER REFERENCES categories(id) ON DELETE CASCADE,
   sale_id INTEGER REFERENCES garage_sales(id) ON DELETE CASCADE
 );
 
-CREATE TABLE categories
-(
-  id SERIAL PRIMARY KEY NOT NULL,
-  name VARCHAR(255) NOT NULL
-);
-
-CREATE TABLE product_categories
-(
-  id SERIAL PRIMARY KEY NOT NULL,
-  product_id INTEGER REFERENCES products(id) ON DELETE CASCADE,
-  category_id INTEGER REFERENCES categories(id) ON DELETE CASCADE
-);
 
 CREATE TABLE comments
 (
