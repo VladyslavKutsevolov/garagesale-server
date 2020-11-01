@@ -30,7 +30,7 @@ values
 insert into garage_sales
   (seller_id, title, cover_photo_url, description, city, province, created_at)
 values
-  (4, 'One Day Sale', 'https://thumbs.dreamstime.com/z/garage-sale-16863161.jpg', 'Duis bibendum, felis sed interdum venenatis, turpis enim blandit mi, in porttitor pede justo eu massa. Donec dapibus. Duis at velit eu est congue elementum.', 'Vancouver', 'British Columbia', '2020-10-25 08:14:22');
+  (3, 'One Day Sale', 'https://thumbs.dreamstime.com/z/garage-sale-16863161.jpg', 'Duis bibendum, felis sed interdum venenatis, turpis enim blandit mi, in porttitor pede justo eu massa. Donec dapibus. Duis at velit eu est congue elementum.', 'Vancouver', 'British Columbia', '2020-10-25 08:14:22');
 
 insert into categories
   (name)
