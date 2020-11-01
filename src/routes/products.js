@@ -157,7 +157,7 @@ module.exports = (db) => {
       });
   });
 
-  router.patch('/edit/:id', upload.single('productImg'), (req, res) => {
+  router.put('/edit/:id', upload.single('productImg'), (req, res) => {
     const parseBodyValues = JSON.parse(JSON.stringify(req.body));
     const formFieldValues = {
       ...parseBodyValues,
@@ -167,6 +167,7 @@ module.exports = (db) => {
 
     editProduct(formFieldValues, productId, db)
       .then(({ rows }) => {
+        console.log('What is rows in product', rows)
         return res.json({
           message: 'Item information is updated!',
           product: rows[0],
