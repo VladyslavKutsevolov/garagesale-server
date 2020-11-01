@@ -80,8 +80,6 @@ const editProduct = function (queryValues, id, db) {
     queryParams.push(id);
     updateQuery += `WHERE id = $${queryParams.length} RETURNING *;`;
   }
-  
-  console.log('updateQuery:', updateQuery);
 
   return db.query(updateQuery, queryParams);
 };
