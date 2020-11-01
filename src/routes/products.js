@@ -30,7 +30,7 @@ const upload = multer({
 });
 
 const addNewProduct = function (item, db) {
-  const queryString = `INSERT INTO products (title, description, image_url, price, sale_id) VALUES ($1, $2, $3, $4, $5) RETURNING*;`;
+  const queryString = `INSERT INTO products (title, description, image_url, price, sale_id, category_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING*;`;
 
   const valueArray = [
     item.title,
@@ -38,22 +38,18 @@ const addNewProduct = function (item, db) {
     item.image_url,
     item.price,
     item.sale_id,
+    item.category_id,
   ];
 
   return db.query(queryString, valueArray);
 };
 
 const removeComma = (updateQuery) => {
-    return updateQuery.replace(/,(\s+)?$/, '');
+  return updateQuery.replace(/,(\s+)?$/, '');
 };
 
 const editProduct = function (queryValues, id, db) {
-  const {
-    title,
-    description,
-    image_url,
-    price
-  } = queryValues;
+  const { title, description, image_url, price } = queryValues;
   const queryParams = [];
   let updateQuery = `UPDATE products SET `;
 
@@ -75,12 +71,12 @@ const editProduct = function (queryValues, id, db) {
   }
 
   updateQuery = removeComma(updateQuery);
-  
+
   if (id) {
     queryParams.push(id);
     updateQuery += `WHERE id = $${queryParams.length} RETURNING *;`;
   }
-  
+
   console.log('updateQuery:', updateQuery);
 
   return db.query(updateQuery, queryParams);
@@ -165,11 +161,29 @@ module.exports = (db) => {
 
   router.post('/new', upload.single('productImg'), (req, res) => {
     const parseBodyValues = JSON.parse(JSON.stringify(req.body));
+    const getCategoryIdByName = (name) => {
+      const ids = {
+        Electronics: 2,
+        Furniture: 3,
+        Apparels: 4,
+        Books: 5,
+        Toys: 6,
+        Media: 7,
+        Appliances: 9,
+        Clothes: 10,
+        Tools: 11,
+        Others: 12,
+      };
+      return ids[name];
+    };
+    const { categoryName } = parseBodyValues;
     const formFieldValues = {
       ...parseBodyValues,
       image_url: req.file.location,
+      category_id: getCategoryIdByName(categoryName),
     };
 
+    console.log('formFieldValues', formFieldValues);
     addNewProduct(formFieldValues, db)
       .then(({ rows }) => {
         return res.json({
@@ -188,7 +202,7 @@ module.exports = (db) => {
   router.put('/edit/:id', upload.single('productImg'), (req, res) => {
     const parseBodyValues = JSON.parse(JSON.stringify(req.body));
     let formFieldValues = {};
-    
+
     if (req.file) {
       formFieldValues = {
         ...parseBodyValues,
@@ -198,7 +212,7 @@ module.exports = (db) => {
       formFieldValues = {
         ...parseBodyValues,
       };
-    };
+    }
     const productId = req.params.id;
 
     editProduct(formFieldValues, productId, db)
