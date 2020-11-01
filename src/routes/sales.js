@@ -56,7 +56,7 @@ const editGarage = function (garage, id, db) {
     garage.city,
     garage.province,
     garage.created_at,
-    id
+    id,
   ];
   return db.query(queryString, valueArray);
 };
@@ -107,12 +107,13 @@ module.exports = (db) => {
 
   router.get('/city/:name', (req, res) => {
     const cityName = req.params.name;
-    const queryString = `SELECT title, city FROM garage_sales WHERE city = $1;`;
+    const queryString = `SELECT * FROM garage_sales WHERE city = $1;`;
 
     db.query(queryString, [cityName])
       .then((data) => {
-        const garage = data.rows;
-        res.json({ garage });
+        const sales = data.rows;
+
+        res.json({ sales });
       })
       .catch((err) => res.status(500).json({ message: 'Failed to load Sale' }));
   });
@@ -166,7 +167,6 @@ module.exports = (db) => {
 
     editGarage(formFieldValues, garageId, db)
       .then(({ rows }) => {
-        console.log('SERVER rows', rows)
         return res.json({
           message: 'Garage sale information is updated!',
           sale: rows[0],
