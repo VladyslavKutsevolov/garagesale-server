@@ -113,15 +113,16 @@ module.exports = (db) => {
   });
 
   //Filter items by category
-  router.get('/category/:name', (req, res) => {
+  router.get('/category/:name/:saleId', (req, res) => {
     console.log('req.params.name', req.params.name);
     db.query(
       `
     SELECT products.* FROM products
+    JOIN garage_sales on garage_sales.id = sale_id
     JOIN categories ON categories.id = category_id
-    WHERE categories.name = $1;
+    WHERE categories.name = $1 AND garage_sales.id = $2;
     `,
-      [req.params.name]
+      [req.params.name, req.params.saleId]
     )
       .then((data) => {
         const listOfProducts = data.rows;
