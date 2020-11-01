@@ -43,19 +43,47 @@ const addNewProduct = function (item, db) {
   return db.query(queryString, valueArray);
 };
 
-const editProduct = function (item, id, db) {
-  const queryString = `UPDATE products SET title=$1, description=$2, image_url=$3, price=$4, sold=$5 WHERE id = $6 RETURNING*;`;
+const removeComma = (updateQuery) => {
+    return updateQuery.replace(/,(\s+)?$/, '');
+};
 
-  const valueArray = [
-    item.title,
-    item.description,
-    item.image_url,
-    item.price,
-    item.sold,
-    id,
-  ];
+const editProduct = function (queryValues, id, db) {
+  const {
+    title,
+    description,
+    image_url,
+    price
+  } = queryValues;
+  const queryParams = [];
+  let updateQuery = `UPDATE products SET `;
 
-  return db.query(queryString, valueArray);
+  if (title) {
+    queryParams.push(title);
+    updateQuery += `title = $${queryParams.length}, `;
+  }
+  if (description) {
+    queryParams.push(description);
+    updateQuery += `description = $${queryParams.length}, `;
+  }
+  if (image_url) {
+    queryParams.push(image_url);
+    updateQuery += `image_url = $${queryParams.length}, `;
+  }
+  if (price) {
+    queryParams.push(price);
+    updateQuery += `price = $${queryParams.length}, `;
+  }
+
+  updateQuery = removeComma(updateQuery);
+  
+  if (id) {
+    queryParams.push(id);
+    updateQuery += `WHERE id = $${queryParams.length} RETURNING *;`;
+  }
+  
+  console.log('updateQuery:', updateQuery);
+
+  return db.query(updateQuery, queryParams);
 };
 
 const getAllCategoriesForSale = (saleId, db) => {
@@ -159,15 +187,22 @@ module.exports = (db) => {
 
   router.put('/edit/:id', upload.single('productImg'), (req, res) => {
     const parseBodyValues = JSON.parse(JSON.stringify(req.body));
-    const formFieldValues = {
-      ...parseBodyValues,
-      image_url: req.file.location,
+    let formFieldValues = {};
+    
+    if (req.file) {
+      formFieldValues = {
+        ...parseBodyValues,
+        image_url: req.file.location,
+      };
+    } else {
+      formFieldValues = {
+        ...parseBodyValues,
+      };
     };
     const productId = req.params.id;
 
     editProduct(formFieldValues, productId, db)
       .then(({ rows }) => {
-        console.log('What is rows in product', rows)
         return res.json({
           message: 'Item information is updated!',
           product: rows[0],
