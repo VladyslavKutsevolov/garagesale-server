@@ -58,7 +58,6 @@ module.exports = db => {
     `, [username])
       .then(data => {
         const loginUser = data.rows[0]
-        console.log("loggedinuser", loginUser)
         res.json({ loginUser })
       })
 
@@ -66,7 +65,6 @@ module.exports = db => {
 
   router.post("/login", async (req, res) => {
     const user = req.body;
-    console.log('user data', user)
     try {
       const userExists = await checkUserExists(user, db);
       if (userExists) {

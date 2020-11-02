@@ -46,8 +46,6 @@ module.exports = db => {
   router.post("/:productId/newComment", async (req, res) => {
     const productId = req.params.productId;
     const { authorId, commentData} = req.body
-    console.log("body", req.body)
-    // const userId = req.session.userId
     if (authorId) {
 
       const queryString = `

@@ -114,8 +114,6 @@ module.exports = (db) => {
 
   //Filter items by category
   router.get('/category/:name/:saleId', (req, res) => {
-    console.log('req.params.name', req.params.name);
-    console.log('req.params.name', req.params.saleId);
     db.query(
       `
     SELECT products.* FROM products
@@ -127,7 +125,6 @@ module.exports = (db) => {
     )
       .then((data) => {
         const listOfProducts = data.rows;
-        console.log('data.rows', data.rows);
         res.json({ listOfProducts });
       })
       .catch((err) =>
