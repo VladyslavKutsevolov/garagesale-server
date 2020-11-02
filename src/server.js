@@ -7,10 +7,52 @@ const bodyparser = require('body-parser');
 const helmet = require('helmet');
 const cors = require('cors');
 const app = express();
+//initialize a simple http server
 const PORT = process.env.PORT || 3001;
 const cookieSession = require('cookie-session');
 const logger = require('morgan');
- 
+
+
+// Server setup
+const server = app.listen(PORT, () => {
+  console.log(`Listening on port ${PORT}.`);
+});
+
+
+
+// Database setup
+const db = require('./db/database');
+db.connect()
+  .then(() => console.log('DB connected'))
+  .catch((e) => console.log(`Error connecting to Postgres server:\n${e}`));
+  
+// WebSocket setup
+const WebSocket = require("ws");
+const wss = new WebSocket.Server({server});
+
+// Websocket connection
+wss.on("connection", socket => {
+  console.log("client connected")
+  socket.on('message', data => {
+    wss.clients.forEach( client => {
+      client.send("hello from broadcast", data)
+    })
+  })
+});
+
+// Websocket newcomment broadcaster
+// wss.clients.forEach(client => {
+//   console.log("client is", client)
+//   if (client.readyState === WebSocket.OPEN) {
+//     client.send(
+//       JSON.stringify({
+//         message: "Hello from websocket"
+//       })
+//     )
+//   }
+// });
+
+
 app.use(logger('dev'));
 app.use(
   cookieSession({
@@ -19,11 +61,7 @@ app.use(
   })
 );
 
-// Database setup
-const db = require('./db/database');
-db.connect()
-  .then(() => console.log('DB connected'))
-  .catch((e) => console.log(`Error connecting to Postgres server:\n${e}`));
+
 
 //Routes
 const sales = require('./routes/sales');
@@ -48,6 +86,4 @@ app.use('/users', usersRoutes(db));
 app.use('/send-text', sendText())
 app.use('/comments', comments(db))
 
-app.listen(PORT, () => {
-  console.log(`Listening on port ${PORT}.`);
-});
+
