@@ -18,8 +18,6 @@ const server = app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}.`);
 });
 
-
-
 // Database setup
 const db = require('./db/database');
 db.connect()
