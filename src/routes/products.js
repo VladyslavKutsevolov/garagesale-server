@@ -192,9 +192,14 @@ module.exports = (db) => {
 
     addNewProduct(formFieldValues, db)
       .then(({ rows }) => {
+        const newProduct = {
+          ...rows[0],
+          product_id: rows[0].id,
+        };
+        console.log('newProduct', newProduct);
         return res.json({
           message: 'New item is added to your Garage!',
-          product: rows[0],
+          product: newProduct,
         });
       })
       .catch((err) => {
