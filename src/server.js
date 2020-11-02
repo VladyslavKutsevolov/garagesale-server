@@ -33,7 +33,7 @@ wss.on("connection", socket => {
   console.log("client connected")
   socket.on('message', data => {
     wss.clients.forEach( client => {
-      client.send("hello from broadcast", data)
+      client.send(JSON.stringify("hello from broadcast", data))
     })
   })
 });
