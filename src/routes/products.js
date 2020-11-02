@@ -30,7 +30,7 @@ const upload = multer({
 });
 
 const addNewProduct = function (item, db) {
-  const queryString = `INSERT INTO products (title, description, image_url, price, sale_id, category_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING*;`;
+  const queryString = `INSERT INTO products (title, description, image_url, price, sale_id, category_id, seller_id ) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING*;`;
 
   const valueArray = [
     item.title,
@@ -39,6 +39,7 @@ const addNewProduct = function (item, db) {
     item.price,
     item.sale_id,
     item.category_id,
+    item.seller_id,
   ];
 
   return db.query(queryString, valueArray);
