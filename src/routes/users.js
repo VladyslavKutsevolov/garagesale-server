@@ -66,7 +66,6 @@ module.exports = db => {
 
   router.post("/login", async (req, res) => {
     const user = req.body;
-    console.log('user data', user)
     try {
       const userExists = await checkUserExists(user, db);
       if (userExists) {
