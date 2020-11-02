@@ -12,6 +12,7 @@ module.exports = () => {
     //_GET Variables
     const { recipient, textMessage } = req.query;
   
+    
     //Send Text
     client.messages.create({
         body: textMessage,
