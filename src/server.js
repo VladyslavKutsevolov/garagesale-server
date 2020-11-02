@@ -39,16 +39,16 @@ wss.on("connection", socket => {
 });
 
 // Websocket newcomment broadcaster
-// wss.clients.forEach(client => {
-//   console.log("client is", client)
-//   if (client.readyState === WebSocket.OPEN) {
-//     client.send(
-//       JSON.stringify({
-//         message: "Hello from websocket"
-//       })
-//     )
-//   }
-// });
+wss.clients.forEach(client => {
+  console.log("client is", client)
+  if (client.readyState === WebSocket.OPEN) {
+    client.send(
+      JSON.stringify({
+        message: "Hello from websocket"
+      })
+    )
+  }
+});
 
 
 app.use(logger('dev'));
