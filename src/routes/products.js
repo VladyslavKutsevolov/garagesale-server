@@ -138,11 +138,17 @@ module.exports = (db) => {
 
   //Filter items by category
   router.get('/category/:name/:saleId', (req, res) => {
-    console.log('req.params.name', req.params.name);
-    console.log('req.params.name', req.params.saleId);
     db.query(
       `
-    SELECT products.* FROM products
+    SELECT  
+        products.id as product_id, 
+        products.title as product_title, 
+        products.image_url, 
+        products.price, 
+        products.sold, 
+        products.description, 
+        products.seller_id
+    FROM products
       JOIN categories ON categories.id = category_id
       JOIN garage_sales ON garage_sales.id = sale_id
     WHERE categories.name = $1 AND garage_sales.id = $2;
@@ -183,7 +189,6 @@ module.exports = (db) => {
       category_id: getCategoryIdByName(categoryName),
     };
 
-    console.log('formFieldValues', formFieldValues);
     addNewProduct(formFieldValues, db)
       .then(({ rows }) => {
         return res.json({
@@ -228,7 +233,7 @@ module.exports = (db) => {
       });
   });
 
-  router.patch('/sold/:id', (req, res) => {
+  router.put('/sold/:id', (req, res) => {
     const query = `UPDATE products SET sold=TRUE WHERE id = $1 RETURNING*;`;
     db.query(query, [req.params.id])
       .then(({ rows }) => {
