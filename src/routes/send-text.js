@@ -12,14 +12,12 @@ module.exports = () => {
     //_GET Variables
     const { recipient, textMessage } = req.query;
   
-    /*
     //Send Text
     client.messages.create({
         body: textMessage,
         to: recipient,  // Text this number
         from: process.env.TWILIO_PHONE_NUMBER // From a valid Twilio number
     }).then((message) => console.log(message.body));
-    */
   })
 
   return router;
