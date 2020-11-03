@@ -30,7 +30,7 @@ const upload = multer({
 });
 
 const addNewProduct = function (item, db) {
-  const queryString = `INSERT INTO products (title, description, image_url, price, sale_id) VALUES ($1, $2, $3, $4, $5) RETURNING*;`;
+  const queryString = `INSERT INTO products (title, description, image_url, price, sale_id, category_id, seller_id ) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING*;`;
 
   const valueArray = [
     item.title,
@@ -38,24 +38,49 @@ const addNewProduct = function (item, db) {
     item.image_url,
     item.price,
     item.sale_id,
+    item.category_id,
+    item.seller_id,
   ];
 
   return db.query(queryString, valueArray);
 };
 
-const editProduct = function (item, id, db) {
-  const queryString = `UPDATE products SET title=$1, description=$2, image_url=$3, price=$4, sold=$5 WHERE id = $6 RETURNING*;`;
+const removeComma = (updateQuery) => {
+  return updateQuery.replace(/,(\s+)?$/, '');
+};
 
-  const valueArray = [
-    item.title,
-    item.description,
-    item.image_url,
-    item.price,
-    item.sold,
-    id,
-  ];
+const editProduct = function (queryValues, id, db) {
+  const { title, description, image_url, price } = queryValues;
+  const queryParams = [];
+  let updateQuery = `UPDATE products SET `;
 
-  return db.query(queryString, valueArray);
+  if (title) {
+    queryParams.push(title);
+    updateQuery += `title = $${queryParams.length}, `;
+  }
+  if (description) {
+    queryParams.push(description);
+    updateQuery += `description = $${queryParams.length}, `;
+  }
+  if (image_url) {
+    queryParams.push(image_url);
+    updateQuery += `image_url = $${queryParams.length}, `;
+  }
+  if (price) {
+    queryParams.push(price);
+    updateQuery += `price = $${queryParams.length}, `;
+  }
+
+  updateQuery = removeComma(updateQuery);
+
+  if (id) {
+    queryParams.push(id);
+    updateQuery += `WHERE id = $${queryParams.length} RETURNING *;`;
+  }
+
+  console.log('updateQuery:', updateQuery);
+
+  return db.query(updateQuery, queryParams);
 };
 
 const getAllCategoriesForSale = (saleId, db) => {
@@ -116,7 +141,15 @@ module.exports = (db) => {
   router.get('/category/:name/:saleId', (req, res) => {
     db.query(
       `
-    SELECT products.* FROM products
+    SELECT  
+        products.id as product_id, 
+        products.title as product_title, 
+        products.image_url, 
+        products.price, 
+        products.sold, 
+        products.description, 
+        products.seller_id
+    FROM products
       JOIN categories ON categories.id = category_id
       JOIN garage_sales ON garage_sales.id = sale_id
     WHERE categories.name = $1 AND garage_sales.id = $2;
@@ -134,16 +167,38 @@ module.exports = (db) => {
 
   router.post('/new', upload.single('productImg'), (req, res) => {
     const parseBodyValues = JSON.parse(JSON.stringify(req.body));
+    const getCategoryIdByName = (name) => {
+      const ids = {
+        Electronics: 2,
+        Furniture: 3,
+        Apparels: 4,
+        Books: 5,
+        Toys: 6,
+        Media: 7,
+        Appliances: 9,
+        Clothes: 10,
+        Tools: 11,
+        Others: 12,
+      };
+      return ids[name];
+    };
+    const { categoryName } = parseBodyValues;
     const formFieldValues = {
       ...parseBodyValues,
       image_url: req.file.location,
+      category_id: getCategoryIdByName(categoryName),
     };
 
     addNewProduct(formFieldValues, db)
       .then(({ rows }) => {
+        const newProduct = {
+          ...rows[0],
+          product_id: rows[0].id,
+        };
+        console.log('newProduct', newProduct);
         return res.json({
           message: 'New item is added to your Garage!',
-          product: rows[0],
+          product: newProduct,
         });
       })
       .catch((err) => {
@@ -154,12 +209,20 @@ module.exports = (db) => {
       });
   });
 
-  router.patch('/edit/:id', upload.single('productImg'), (req, res) => {
+  router.put('/edit/:id', upload.single('productImg'), (req, res) => {
     const parseBodyValues = JSON.parse(JSON.stringify(req.body));
-    const formFieldValues = {
-      ...parseBodyValues,
-      image_url: req.file.location,
-    };
+    let formFieldValues = {};
+
+    if (req.file) {
+      formFieldValues = {
+        ...parseBodyValues,
+        image_url: req.file.location,
+      };
+    } else {
+      formFieldValues = {
+        ...parseBodyValues,
+      };
+    }
     const productId = req.params.id;
 
     editProduct(formFieldValues, productId, db)
@@ -175,7 +238,7 @@ module.exports = (db) => {
       });
   });
 
-  router.patch('/sold/:id', (req, res) => {
+  router.put('/sold/:id', (req, res) => {
     const query = `UPDATE products SET sold=TRUE WHERE id = $1 RETURNING*;`;
     db.query(query, [req.params.id])
       .then(({ rows }) => {

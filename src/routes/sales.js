@@ -45,20 +45,49 @@ const addNewGarage = function (garage, db) {
   return db.query(queryString, valueArray);
 };
 
-const editGarage = function (garage, id, db) {
-  const queryString = `
-  UPDATE garage_sales SET title=$1, description=$2, cover_photo_url=$3, city=$4, province=$5, created_at=$6 WHERE id = $7 RETURNING*;`;
+const editGarage = function (queryValues, id, db) {
+  const {
+    title,
+    description,
+    cover_photo_url,
+    city,
+    province,
+    created_at,
+  } = queryValues;
+  const queryParams = [];
+  let updateQuery = `UPDATE garage_sales SET `;
 
-  const valueArray = [
-    garage.title,
-    garage.description,
-    garage.cover_photo_url,
-    garage.city,
-    garage.province,
-    garage.created_at,
-    id
-  ];
-  return db.query(queryString, valueArray);
+  if (title) {
+    queryParams.push(title);
+    updateQuery += `title = $${queryParams.length}, `;
+  }
+  if (description) {
+    queryParams.push(description);
+    updateQuery += `description = $${queryParams.length}, `;
+  }
+  if (cover_photo_url) {
+    queryParams.push(cover_photo_url);
+    updateQuery += `cover_photo_url = $${queryParams.length}, `;
+  }
+  if (city) {
+    queryParams.push(city);
+    updateQuery += `city = $${queryParams.length}, `;
+  }
+  if (province) {
+    queryParams.push(province);
+    updateQuery += `province = $${queryParams.length}, `;
+  }
+  if (created_at) {
+    queryParams.push(created_at);
+    updateQuery += `created_at = $${queryParams.length} `;
+  }
+
+  if (id) {
+    queryParams.push(id);
+    updateQuery += `WHERE id = $${queryParams.length} RETURNING *;`;
+  }
+
+  return db.query(updateQuery, queryParams);
 };
 
 module.exports = (db) => {
@@ -107,12 +136,13 @@ module.exports = (db) => {
 
   router.get('/city/:name', (req, res) => {
     const cityName = req.params.name;
-    const queryString = `SELECT title, city FROM garage_sales WHERE city = $1;`;
+    const queryString = `SELECT * FROM garage_sales WHERE city = $1;`;
 
     db.query(queryString, [cityName])
       .then((data) => {
-        const garage = data.rows;
-        res.json({ garage });
+        const sales = data.rows;
+
+        res.json({ sales });
       })
       .catch((err) => res.status(500).json({ message: 'Failed to load Sale' }));
   });
@@ -156,11 +186,20 @@ module.exports = (db) => {
   //  Edit Garage
   router.put('/edit/:id', upload.single('saleImg'), (req, res) => {
     const parseBodyValues = JSON.parse(JSON.stringify(req.body));
-    const formFieldValues = {
-      ...parseBodyValues,
-      created_at: new Date(Date.now()),
-      cover_photo_url: req.file.location,
-    };
+    let formFieldValues = {};
+
+    if (req.file) {
+      formFieldValues = {
+        ...parseBodyValues,
+        created_at: new Date(Date.now()),
+        cover_photo_url: req.file.location,
+      };
+    } else {
+      formFieldValues = {
+        ...parseBodyValues,
+        created_at: new Date(Date.now()),
+      };
+    }
 
     const garageId = req.params.id;
 
