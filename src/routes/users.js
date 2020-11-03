@@ -59,7 +59,7 @@ module.exports = db => {
       .then(data => {
         const loginUser = data.rows[0]
         console.log("loggedinuser", loginUser)
-        res.json({ loginUser, message: "Succesfully hello Login" })
+        res.json({ loginUser, message: "Welcome to Garage Sale!" })
       })
 
   })
@@ -93,7 +93,7 @@ module.exports = db => {
   router.post('/logout', (req, res) => {
     req.session = null;
     return res
-      .json({ message: "Succesfully logged out" });
+      .json({ message: "Successfully Log Out" });
   })
 
   return router;
