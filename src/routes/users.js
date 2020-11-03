@@ -59,7 +59,7 @@ module.exports = db => {
       .then(data => {
         const loginUser = data.rows[0]
         console.log("loggedinuser", loginUser)
-        res.json({ loginUser, message: "Welcome to Garage Sale!" })
+        res.json({ loginUser, message: "Welcome to Garajiji!" })
       })
 
   })
