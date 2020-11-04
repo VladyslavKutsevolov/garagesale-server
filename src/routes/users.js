@@ -36,18 +36,6 @@ const verifyPassword = async (username, password, db) => {
 };
 
 module.exports = db => {
-  /*
-  router.get("/", (req, res) => {
-    db.query(`
-      SELECT username
-      FROM users;`)
-      .then(data => {
-        res.json(data.rows)
-      })
-      .catch(err => console.log('query Error', err))
-  });
-  */
-
   router.get("/:username", (req, res) => {
     const username = req.params.username;
 
@@ -58,11 +46,12 @@ module.exports = db => {
     `, [username])
       .then(data => {
         const loginUser = data.rows[0]
-        console.log("loggedinuser", loginUser)
         res.json({ loginUser, message: "Welcome to Garajiji!" })
       })
-
-  })
+      .catch((err) =>
+        res.status(500).json({ message: 'Failed to Login' })
+      );
+  });
 
   router.post("/login", async (req, res) => {
     const user = req.body;
