@@ -46,7 +46,7 @@ module.exports = db => {
     `, [username])
       .then(data => {
         const loginUser = data.rows[0]
-        res.json({ loginUser, message: "Welcome to Garage Sale!" })
+        res.json({ loginUser, message: "Welcome to Garajiji!" })
       })
       .catch((err) =>
         res.status(500).json({ message: 'Failed to Login' })
