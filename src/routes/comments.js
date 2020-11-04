@@ -71,6 +71,34 @@ module.exports = db => {
     }
   });
 
+  // Get most recent activity for logged in user's garage_sales
+
+  router.get('/getlatestcomments/:sellerId', (req, res) => {
+
+    const sellerId = req.params.sellerId;
+    const queryString = 
+      `
+      SELECT 
+        comments.comment_text as comment, 
+        comments.created_at, 
+        users.username, 
+        products.title 
+      FROM garage_sales 
+      JOIN products ON sale_id = garage_sales.id 
+      JOIN comments ON product_id = products.id 
+      JOIN users ON comments.author_id = users.id  
+      WHERE garage_sales.seller_id = $1 AND comments.author_id != $1
+      ORDER BY created_at DESC
+      LIMIT 3;
+      `;
+      db.query(queryString, [sellerId])
+        .then((data) => {
+          const latestComments = data.rows;
+          res.json({latestComments})
+        })
+        .catch(e => {console.log(e)})
+  })
+
 
   router.delete('/:commentId/delete', (req, res) => {
     const { authorId } = req.body
