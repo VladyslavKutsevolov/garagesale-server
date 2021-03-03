@@ -10,7 +10,7 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 const cookieSession = require('cookie-session');
 const logger = require('morgan');
- 
+
 app.use(logger('dev'));
 app.use(
   cookieSession({
@@ -38,7 +38,7 @@ app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
-  res.send({ message: 'hello Express!' });
+  res.send({ message: 'hello Express!!' });
 });
 
 // Use routes modules
