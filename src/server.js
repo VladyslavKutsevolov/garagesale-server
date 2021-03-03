@@ -38,7 +38,7 @@ app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
-  res.send({ message: 'hello Express!!' });
+  res.send({ message: 'hello' });
 });
 
 // Use routes modules
